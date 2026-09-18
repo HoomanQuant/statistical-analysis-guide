@@ -281,6 +281,20 @@ License: MIT
           <button type="button" class="pill" data-value="corr">همبستگی / رگرسیون ساده</button>
         </div>
       </div>
+      <div class="field-group hidden" id="mgmt_compareFields">
+        <label class="field-label">چند گروه را با هم مقایسه می‌کنید؟</label>
+        <div class="pills" data-group="numGroups">
+          <button type="button" class="pill" data-value="2">۲ گروه</button>
+          <button type="button" class="pill" data-value="3">۳ گروه یا بیشتر</button>
+        </div>
+        <div class="field-group" style="margin-top:16px">
+          <label class="field-label">گروه‌ها مستقل‌اند یا وابسته؟</label>
+          <div class="pills" data-group="independent">
+            <button type="button" class="pill" data-value="yes">مستقل (پاسخ‌دهندگان متفاوت)</button>
+            <button type="button" class="pill" data-value="no">وابسته (همان افراد، دو زمان)</button>
+          </div>
+        </div>
+      </div>
       <div class="field-group">
         <label class="field-label">تعداد پرسشنامه‌های جمع‌آوری‌شده (حجم نمونه)</label>
         <input type="number" min="1" id="f_sampleSize" placeholder="مثلاً ۲۵۰">
@@ -331,7 +345,17 @@ License: MIT
       </div>
       <div class="field-group hidden" id="groupCompareFields">
         <label class="field-label">تعداد گروه‌های مقایسه‌ای</label>
-        <input type="number" min="2" id="f_numGroups" placeholder="مثلاً ۲">
+        <div class="pills" data-group="numGroups">
+          <button type="button" class="pill" data-value="2">۲ گروه</button>
+          <button type="button" class="pill" data-value="3">۳ گروه یا بیشتر</button>
+        </div>
+        <div class="field-group" style="margin-top:16px">
+          <label class="field-label">گروه‌ها مستقل‌اند یا وابسته؟</label>
+          <div class="pills" data-group="independent">
+            <button type="button" class="pill" data-value="yes">مستقل</button>
+            <button type="button" class="pill" data-value="no">وابسته (همان افراد، دو زمان)</button>
+          </div>
+        </div>
       </div>
     `,
     psychology_education: `
@@ -449,17 +473,34 @@ License: MIT
         <input type="number" min="1" id="f_sampleSize" placeholder="مثلاً ۱۸۰">
       </div>
       <div class="field-group" id="med_compareFields">
-        <label class="field-label">تعداد گروه‌های مقایسه‌ای</label>
-        <div class="pills" data-group="numGroups">
-          <button type="button" class="pill" data-value="1">فقط یک گروه (قبل/بعد)</button>
-          <button type="button" class="pill" data-value="2">دو گروه</button>
-          <button type="button" class="pill" data-value="3">سه گروه یا بیشتر</button>
+        <label class="field-label">نوع متغیر پیامد (وابسته)</label>
+        <div class="pills" data-group="outcomeType">
+          <button type="button" class="pill" data-value="quant">کمّی (عدد پیوسته، مثل فشار خون)</button>
+          <button type="button" class="pill" data-value="binary">دوحالتی (مثل بهبود/عدم‌بهبود)</button>
+          <button type="button" class="pill" data-value="categorical">دسته‌ای چندسطحی</button>
+          <button type="button" class="pill" data-value="ordinal">رتبه‌ای (مثل شدت درد ۱ تا ۵)</button>
+        </div>
+        <div class="field-group" style="margin-top:16px">
+          <label class="field-label">تعداد گروه‌های مقایسه‌ای</label>
+          <div class="pills" data-group="numGroups">
+            <button type="button" class="pill" data-value="1">فقط یک گروه (قبل/بعد)</button>
+            <button type="button" class="pill" data-value="2">دو گروه</button>
+            <button type="button" class="pill" data-value="3">سه گروه یا بیشتر</button>
+          </div>
         </div>
         <div class="field-group hidden" id="independentWrap" style="margin-top:16px">
           <label class="field-label">گروه‌ها مستقل‌اند یا وابسته (زوجی)؟</label>
           <div class="pills" data-group="independent">
             <button type="button" class="pill" data-value="yes">مستقل (افراد متفاوت)</button>
             <button type="button" class="pill" data-value="no">وابسته (همان افراد، دو زمان)</button>
+          </div>
+        </div>
+        <div class="field-group hidden" id="med_normalWrap" style="margin-top:16px">
+          <label class="field-label">توزیع متغیر پیامد نرمال است؟</label>
+          <div class="pills" data-group="normal">
+            <button type="button" class="pill" data-value="yes">تقریباً بله / نمونه بزرگ است</button>
+            <button type="button" class="pill" data-value="no">خیر / کج است</button>
+            <button type="button" class="pill" data-value="unknown">هنوز آزمون نکرده‌ام</button>
           </div>
         </div>
         <div class="field-group" style="margin-top:16px">
@@ -659,11 +700,17 @@ License: MIT
       toggle('med_survivalFields', goal !== 'survival');
       const ng = getGroupValue('numGroups');
       toggle('independentWrap', !(ng === '2' || ng === '3'));
+      const outType = getGroupValue('outcomeType');
+      toggle('med_normalWrap', outType !== 'quant');
     }
     if (discipline === 'generic') {
       const ng = getGroupValue('numGroups');
       toggle('genericIndependentWrap', !(ng === '2' || ng === '3'));
       toggle('genericPredictorsWrap', ng !== '0');
+    }
+    if (discipline === 'management') {
+      const goal = getGroupValue('goal') || 'sem';
+      toggle('mgmt_compareFields', goal !== 'compare');
     }
     if (discipline === 'humanities') {
       const goal = getGroupValue('goal');
@@ -997,3 +1044,637 @@ License: MIT
       else if (meta.isNumeric && meta.uniqueCount < 8) vtype = 'ordinal';
       setPillActive('variableType', vtype);
     }
+    if (choices.factorCol1 && summary.columns[choices.factorCol1]) {
+      const fMeta = summary.columns[choices.factorCol1];
+      const ngGroup = document.querySelector('.pills[data-group="numGroups"]');
+      if (ngGroup) {
+        let ngVal = String(fMeta.uniqueCount);
+        if (fMeta.uniqueCount >= 3) ngVal = '3';
+        setPillActive('numGroups', ngVal);
+      }
+    }
+    let predictorCount = 0;
+    if (choices.factorCol1) predictorCount++;
+    if (choices.factorCol2) predictorCount++;
+    if (predictorCount > 0) {
+      const predInput = document.getElementById('f_numPredictors');
+      if (predInput) predInput.value = predictorCount;
+    }
+    wireConditionalReveals();
+  }
+
+  // ---------------------------------------------------------------
+  // Decision engine
+  // ---------------------------------------------------------------
+  function val(id) {
+    const el = document.getElementById(id);
+    return el ? el.value : '';
+  }
+
+  function normalNote(normal) {
+    return normal === 'unknown'
+      ? ' از آنجا که هنوز نرمال بودن را آزمون نکرده‌اید، مسیر ایمن‌تر (ناپارامتری) پیشنهاد شد؛ با آزمون Shapiro-Wilk بررسی کنید و در صورت تأیید نرمال بودن، از نسخه پارامتری استفاده کنید.'
+      : '';
+  }
+
+  function step(title, kv, software) {
+    return { title: title, kv: kv, software: software || [] };
+  }
+
+  // Shared engine: compare 2/3 groups on a quantitative/ordinal/categorical outcome,
+  // independent or paired. Reused by management, humanities, psychology, medicine, generic.
+  function compareEngine(outcomeType, numGroups, independent, normal) {
+    const ind = independent !== 'no';
+    const g3 = numGroups === '3';
+    normal = normal || 'yes';
+
+    if (outcomeType === 'binary' || outcomeType === 'categorical') {
+      if (!ind) {
+        return g3
+          ? step('مقایسه چند اندازه‌گیری دوحالتی/کیفی وابسته', [
+              { k: 'روش پیشنهادی', v: "Cochran's Q Test" },
+              { k: 'چرا', v: 'تعمیم McNemar برای بیش از دو اندازه‌گیری وابسته از یک متغیر دوحالتی روی یک گروه؛ Chi-square معمولی برای داده وابسته مناسب نیست.' },
+              { k: 'پیش‌فرض‌ها', v: 'متغیر دقیقاً دوحالتی باشد؛ اندازه‌گیری‌ها از یک واحد و وابسته باشند.' }
+            ], ['SPSS', 'R'])
+          : step('مقایسه زوجی متغیر دوحالتی/کیفی', [
+              { k: 'روش پیشنهادی', v: "McNemar's Test" },
+              { k: 'چرا', v: 'دو اندازه‌گیری از یک واحد (وابسته) روی متغیر دوحالتی دارید؛ McNemar جایگزین درست Chi-square است.' },
+              { k: 'پیش‌فرض‌ها', v: 'متغیر دقیقاً دوحالتی باشد؛ مشاهدات زوجی باشند، نه مستقل.' }
+            ], ['SPSS', 'R']);
+      }
+      return step('مقایسه گروه‌های مستقل روی متغیر کیفی', [
+        { k: 'روش پیشنهادی', v: 'Chi-square / Fisher’s Exact' },
+        { k: 'چرا', v: 'برای بررسی ارتباط بین متغیر گروه‌بندی مستقل و یک متغیر کیفی/دوحالتی.' },
+        { k: 'پیش‌فرض‌ها', v: 'فراوانی مورد انتظار در بیشتر خانه‌های جدول ≥ ۵ (در غیر این صورت از Fisher استفاده کنید).' }
+      ], ['SPSS', 'R']);
+    }
+
+    if (outcomeType === 'ordinal') {
+      if (!ind) {
+        return g3
+          ? step('مقایسه چند اندازه‌گیری وابسته (رتبه‌ای)', [{ k: 'روش پیشنهادی', v: 'Friedman Test' }], ['SPSS', 'R'])
+          : step('مقایسه زوجی (رتبه‌ای)', [{ k: 'روش پیشنهادی', v: 'Wilcoxon Signed-Rank' }], ['SPSS', 'R']);
+      }
+      return g3
+        ? step('مقایسه چند گروه مستقل (رتبه‌ای)', [{ k: 'روش پیشنهادی', v: 'Kruskal–Wallis' }, { k: 'چرا', v: 'داده رتبه‌ای/لیکرت است؛ این آزمون ترتیب داده را حفظ می‌کند.' }], ['SPSS', 'R'])
+        : step('مقایسه دو گروه مستقل (رتبه‌ای)', [{ k: 'روش پیشنهادی', v: 'Mann–Whitney U' }], ['SPSS', 'R']);
+    }
+
+    // quantitative outcome (default)
+    if (!g3) {
+      if (ind) {
+        return normal === 'yes'
+          ? step('مقایسه دو گروه مستقل', [
+              { k: 'روش پیشنهادی', v: "Welch's t-test" },
+              { k: 'چرا', v: 'نسخه پیش‌فرض امروزی برای دو گروه مستقل؛ نیازی به فرض برابری واریانس ندارد. اگر Levene برابری واریانس را تأیید کرد، t-test استاندارد هم قابل استفاده است.' },
+              { k: 'پیش‌فرض‌ها', v: 'توزیع تقریباً نرمال در هر گروه؛ مشاهدات مستقل.' }
+            ], ['SPSS', 'R'])
+          : step('مقایسه دو گروه مستقل', [
+              { k: 'روش پیشنهادی', v: 'Mann–Whitney U' },
+              { k: 'چرا', v: 'گزینه ناپارامتری وقتی نرمال بودن برقرار نیست.' + normalNote(normal) }
+            ], ['SPSS', 'R']);
+      }
+      return normal === 'yes'
+        ? step('مقایسه زوجی', [{ k: 'روش پیشنهادی', v: 'Paired Samples t-test' }], ['SPSS', 'R'])
+        : step('مقایسه زوجی', [{ k: 'روش پیشنهادی', v: 'Wilcoxon Signed-Rank' }, { k: 'چرا', v: 'گزینه ناپارامتری برای داده زوجی.' + normalNote(normal) }], ['SPSS', 'R']);
+    }
+    // 3+ groups, quantitative
+    if (ind) {
+      return normal === 'yes'
+        ? step('مقایسه چند گروه مستقل', [
+            { k: 'روش پیشنهادی', v: 'One-Way ANOVA + Tukey HSD (پس‌آزمون)' },
+            { k: 'پیش‌فرض‌ها', v: 'نرمال بودن باقیمانده‌ها؛ همگنی واریانس بین گروه‌ها؛ استقلال مشاهدات.' }
+          ], ['SPSS', 'R'])
+        : step('مقایسه چند گروه مستقل', [
+            { k: 'روش پیشنهادی', v: 'Kruskal–Wallis + Dunn’s Test (پس‌آزمون)' },
+            { k: 'چرا', v: 'گزینه ناپارامتری برای سه گروه یا بیشتر.' + normalNote(normal) }
+          ], ['SPSS', 'R']);
+    }
+    return normal === 'yes'
+      ? step('مقایسه چند اندازه‌گیری وابسته', [{ k: 'روش پیشنهادی', v: 'Repeated Measures ANOVA' }, { k: 'پیش‌فرض‌ها', v: 'کرویت واریانس-کوواریانس (آزمون Mauchly).' }], ['SPSS', 'R'])
+      : step('مقایسه چند اندازه‌گیری وابسته', [{ k: 'روش پیشنهادی', v: 'Friedman Test' }, { k: 'چرا', v: 'گزینه ناپارامتری.' + normalNote(normal) }], ['SPSS', 'R']);
+  }
+
+  function baseSteps() {
+    return [
+      step('شناخت و آماده‌سازی داده', [
+        { k: 'کار لازم', v: 'تعریف دقیق متغیرها، واحد اندازه‌گیری و نحوه کدگذاری؛ کنترل خطاهای ورود داده.' }
+      ], ['Excel', 'SPSS', 'R']),
+      step('بررسی داده‌های گمشده و پرت', [
+        { k: 'کار لازم', v: 'الگوی داده‌های گمشده را بررسی کنید (تصادفی یا سیستماتیک) و داده‌های پرت را شناسایی و تصمیم درباره آن‌ها را مستند کنید.' }
+      ], ['SPSS', 'R'])
+    ];
+  }
+
+  function tailSteps() {
+    return [
+      step('اندازه اثر و فاصله اطمینان', [
+        { k: 'کار لازم', v: 'به معنی‌داری آماری اکتفا نکنید؛ اندازه اثر (Cohen’s d / η² / OR) و فاصله اطمینان ۹۵٪ را هم گزارش کنید.' }
+      ], ['SPSS', 'R']),
+      step('گزارش نهایی', [
+        { k: 'کار لازم', v: 'جدول‌ها و نمودارها باید دقیقاً با سؤال پژوهش و روش آماری انتخابی سازگار باشند.' }
+      ], ['Excel', 'SPSS', 'R'])
+    ];
+  }
+
+  function sampleSizeWarning(n, minNeeded, context) {
+    if (!n || !minNeeded) return null;
+    n = Number(n);
+    if (n < minNeeded) {
+      return {
+        text: 'حجم نمونه واردشده (' + n + ') کمتر از حداقل تقریبی توصیه‌شده (' + minNeeded + ') برای ' + context + ' است.',
+        alt: 'این یک قاعده سرانگشتی است، نه تحلیل توان رسمی؛ برای برآورد دقیق از یک تحلیل توان آماری (Power Analysis) استفاده کنید.'
+      };
+    }
+    return null;
+  }
+
+  function buildPlanManagement(v) {
+    const goal = v.goal || 'sem';
+    const steps = baseSteps();
+    const warnings = [];
+    let subtitle = 'مسیر مدیریت / علوم اجتماعی';
+
+    if (goal === 'sem') {
+      steps.push(step('بررسی پایایی', [{ k: 'روش پیشنهادی', v: "Cronbach's Alpha / Composite Reliability" }], ['SPSS', 'R', 'SmartPLS']));
+      if (v.hasQuestionnaire !== 'no') {
+        steps.push(step('روایی سازه', [{ k: 'روش پیشنهادی', v: 'Exploratory / Confirmatory Factor Analysis' }], ['SPSS', 'AMOS', 'R']));
+      }
+      const n = Number(v.sampleSize) || 0;
+      const smallOrQuestionnaire = n > 0 && n < 200;
+      steps.push(step('برازش مدل ساختاری', [
+        { k: 'روش پیشنهادی', v: smallOrQuestionnaire ? 'PLS-SEM (حداقل مربعات جزئی)' : 'CB-SEM (کوواریانس-محور)' },
+        { k: 'چرا', v: smallOrQuestionnaire
+            ? 'با حجم نمونه کمتر از ۲۰۰ یا داده‌های غیرنرمال، PLS-SEM پایدارتر عمل می‌کند.'
+            : 'با حجم نمونه کافی (۲۰۰+) و امکان بررسی نرمال بودن چندمتغیره، CB-SEM شاخص‌های برازش رسمی‌تری می‌دهد.' }
+      ], [smallOrQuestionnaire ? 'SmartPLS' : 'AMOS', 'R (lavaan)']));
+      if (v.hasMediation === 'yes') {
+        steps.push(step('آزمون میانجی‌گری / تعدیل‌گری', [
+          { k: 'روش پیشنهادی', v: 'Bootstrapping برای اثرات غیرمستقیم' },
+          { k: 'چرا', v: 'بوت‌استرپ فرض نرمال بودن توزیع اثر غیرمستقیم را ندارد و استاندارد رایج امروزی است (به‌جای آزمون Sobel).' }
+        ], ['SmartPLS', 'AMOS PROCESS', 'R']));
+      }
+      subtitle = 'تحلیل پرسشنامه و مدل‌یابی معادلات ساختاری';
+    } else if (goal === 'compare') {
+      const cmp = compareEngine('quant', v.numGroups, v.independent, 'unknown');
+      steps.push(cmp);
+      subtitle = 'مقایسه گروه‌ها بر اساس نمرات سازه‌ها';
+      if (!v.numGroups || !v.independent) {
+        warnings.push({ text: 'تعداد گروه و استقلال آن‌ها مشخص نشده؛ توصیه بالا حدسی و نیازمند تکمیل اطلاعات است.', alt: '' });
+      }
+    } else {
+      steps.push(step('بررسی رابطه بین متغیرها', [
+        { k: 'روش پیشنهادی', v: 'Pearson / Spearman Correlation، در صورت وجود چند پیش‌بین: Multiple Regression' }
+      ], ['SPSS', 'R']));
+      subtitle = 'همبستگی و رگرسیون ساده بین سازه‌ها';
+    }
+    steps.push(...tailSteps());
+
+    const sw = sampleSizeWarning(v.sampleSize, goal === 'sem' ? 150 : 30, 'این نوع تحلیل');
+    if (sw) warnings.push(sw);
+
+    return { subtitle: subtitle, meta: [
+      { k: 'رشته', v: 'مدیریت / علوم اجتماعی' },
+      { k: 'هدف', v: goal === 'sem' ? 'مدل معادلات ساختاری' : (goal === 'compare' ? 'مقایسه گروه‌ها' : 'همبستگی/رگرسیون') },
+      { k: 'حجم نمونه', v: v.sampleSize || 'ثبت نشده' }
+    ], steps: steps, warnings: warnings };
+  }
+
+  function buildPlanHumanities(v) {
+    const goal = v.goal || 'sem';
+    const steps = baseSteps();
+    const warnings = [];
+    let subtitle = 'مسیر علوم انسانی';
+
+    if (goal === 'sem') {
+      steps.push(step('بررسی پایایی و روایی', [{ k: 'روش پیشنهادی', v: "Cronbach's Alpha + Factor Analysis" }], ['SPSS', 'R']));
+      steps.push(step('بررسی روابط بین سازه‌ها', [{ k: 'روش پیشنهادی', v: 'Path Analysis / SEM' }], ['AMOS', 'SmartPLS', 'R']));
+      subtitle = 'تحلیل پرسشنامه‌ای علوم انسانی';
+    } else if (goal === 'compare') {
+      steps.push(compareEngine('quant', v.numGroups, v.independent, 'unknown'));
+      subtitle = 'مقایسه گروه‌ها';
+      if (!v.numGroups || !v.independent) {
+        warnings.push({ text: 'تعداد گروه و استقلال آن‌ها مشخص نشده؛ توصیه بالا را پس از تکمیل اطلاعات بازبینی کنید.', alt: '' });
+      }
+    } else {
+      steps.push(step('بررسی رابطه بین متغیرها', [{ k: 'روش پیشنهادی', v: 'Pearson / Spearman Correlation' }], ['SPSS', 'R']));
+      subtitle = 'همبستگی بین متغیرها';
+    }
+    steps.push(...tailSteps());
+    const sw = sampleSizeWarning(v.sampleSize, 30, 'این نوع تحلیل');
+    if (sw) warnings.push(sw);
+
+    return { subtitle: subtitle, meta: [
+      { k: 'رشته', v: 'علوم انسانی' },
+      { k: 'هدف', v: goal === 'sem' ? 'مدل معادلات ساختاری' : (goal === 'compare' ? 'مقایسه گروه‌ها' : 'همبستگی') },
+      { k: 'حجم نمونه', v: v.sampleSize || 'ثبت نشده' }
+    ], steps: steps, warnings: warnings };
+  }
+
+  function buildPlanPsychology(v) {
+    const goal = v.goal || 'survey';
+    const steps = baseSteps();
+    const warnings = [];
+    let subtitle = 'مسیر روان‌شناسی و علوم تربیتی';
+
+    if (goal === 'experimental') {
+      const ng = v.numGroups === '3' ? '3' : '2';
+      if (v.hasPretest === 'yes') {
+        steps.push(step('کنترل نمره پیش‌آزمون', [
+          { k: 'روش پیشنهادی', v: 'ANCOVA (با پیش‌آزمون به‌عنوان کوواریت)' },
+          { k: 'چرا', v: 'وقتی پیش‌آزمون در دسترس است، ANCOVA معمولاً از مقایسه‌ی ساده‌ی نمرات پس‌آزمون قوی‌تر است چون تفاوت‌های اولیه بین گروه‌ها را کنترل می‌کند.' },
+          { k: 'جایگزین', v: 'Mixed (Split-Plot) ANOVA با عامل درون‌گروهی زمان (قبل/بعد) و عامل بین‌گروهی تیمار.' }
+        ], ['SPSS', 'R']));
+      } else {
+        steps.push(compareEngine('quant', ng, 'yes', 'unknown'));
+      }
+      subtitle = 'طرح آزمایشی با گروه کنترل';
+    } else if (goal === 'survey') {
+      steps.push(step('بررسی پایایی و روایی', [{ k: 'روش پیشنهادی', v: "Cronbach's Alpha + Factor Analysis" }], ['SPSS', 'R']));
+      steps.push(step('بررسی روابط بین سازه‌ها', [{ k: 'روش پیشنهادی', v: 'Path Analysis / SEM' }], ['AMOS', 'SmartPLS', 'R']));
+      if (v.hasMediation === 'yes') {
+        steps.push(step('آزمون میانجی‌گری / تعدیل‌گری', [{ k: 'روش پیشنهادی', v: 'Bootstrapping (PROCESS Macro یا SmartPLS)' }], ['SPSS PROCESS', 'SmartPLS']));
+      }
+      subtitle = 'پیمایش پرسشنامه‌ای';
+    } else {
+      const ng2 = Number(v.numGroups2) || 2;
+      steps.push(compareEngine('quant', ng2 >= 3 ? '3' : '2', 'yes', 'unknown'));
+      subtitle = 'مقایسه گروه‌های جمعیت‌شناختی';
+    }
+    steps.push(...tailSteps());
+    const sw = sampleSizeWarning(v.sampleSize, goal === 'experimental' ? 20 : 30, 'این نوع تحلیل');
+    if (sw) warnings.push(sw);
+
+    return { subtitle: subtitle, meta: [
+      { k: 'رشته', v: 'روان‌شناسی و علوم تربیتی' },
+      { k: 'هدف', v: goal === 'experimental' ? 'طرح آزمایشی' : (goal === 'survey' ? 'پیمایش پرسشنامه‌ای' : 'مقایسه جمعیت‌شناختی') },
+      { k: 'حجم نمونه', v: v.sampleSize || 'ثبت نشده' }
+    ], steps: steps, warnings: warnings };
+  }
+
+  function buildPlanAgriculture(v) {
+    const goal = v.goal || 'design';
+    const steps = baseSteps();
+    const warnings = [];
+    let subtitle = 'مسیر کشاورزی / علوم زیستی';
+
+    if (goal === 'design') {
+      const nf = v.numFactors || '1';
+      let method = 'One-Way ANOVA (طرح تک‌عاملی)';
+      if (nf === '2') method = 'Two-Way (Factorial) ANOVA';
+      if (nf === '3') method = 'Factorial ANOVA چندعاملی (یا Split-Plot در صورت وجود عامل کرت اصلی/فرعی)';
+      if (v.designType === 'splitplot') method = 'Split-Plot ANOVA';
+      steps.push(step('تحلیل اثر تیمار', [
+        { k: 'طرح آزمایشی', v: (v.designType === 'unsure' ? 'مشخص نیست — با استاد راهنما یا آماردان تعیین کنید' : v.designType) },
+        { k: 'روش پیشنهادی', v: method },
+        { k: 'پیش‌فرض‌ها', v: 'نرمال بودن باقیمانده‌ها؛ همگنی واریانس بین تیمارها.' }
+      ], ['R', 'SPSS', 'SAS', 'GenStat']));
+      steps.push(step('مقایسه میانگین تیمارها', [{ k: 'روش پیشنهادی', v: 'Tukey HSD / LSD (بسته به هدف)' }], ['R', 'SPSS']));
+      if (v.measuredOverTime === 'yes') {
+        steps.push(step('تحلیل تخصصی چندمکانی/چندساله', [{ k: 'روش پیشنهادی', v: 'AMMI / GGE Biplot (اثر متقابل ژنوتیپ × محیط)' }], ['R']));
+      }
+      const reps = Number(v.numReplications) || 0;
+      if (reps > 0 && reps < 3) {
+        warnings.push({ text: 'تعداد تکرار واردشده (' + reps + ') کمتر از حداقل رایج (۳ تکرار) برای اکثر طرح‌های آزمایشی کشاورزی است.', alt: 'تکرار ناکافی می‌تواند برآورد خطای آزمایشی را غیرقابل‌اعتماد کند؛ در صورت امکان تکرار را افزایش دهید.' });
+      }
+      subtitle = 'طراحی و تحلیل آزمایش کشاورزی';
+    } else if (goal === 'correlation') {
+      const nt = Number(v.numTraits) || 2;
+      steps.push(step('بررسی رابطه بین صفات', [
+        { k: 'روش پیشنهادی', v: nt > 2 ? 'ماتریس همبستگی Pearson/Spearman' : 'Pearson/Spearman Correlation' }
+      ], ['R', 'SPSS']));
+      if (nt > 5) {
+        steps.push(step('کاهش ابعاد صفات', [{ k: 'روش پیشنهادی', v: 'تحلیل مؤلفه‌های اصلی (PCA)' }, { k: 'چرا', v: 'با تعداد صفت بالا، PCA ساختار کلی همبستگی‌ها را خلاصه می‌کند.' }], ['R']));
+      }
+      subtitle = 'بررسی همبستگی بین صفات زراعی';
+    } else {
+      steps.push(step('آمار توصیفی', [{ k: 'روش پیشنهادی', v: 'میانگین، انحراف معیار، ضریب تغییرات (CV٪)' }], ['Excel', 'R', 'SPSS']));
+      subtitle = 'توصیف داده‌های زراعی';
+    }
+    steps.push(...tailSteps());
+    const sw = sampleSizeWarning(v.sampleSize, 20, 'این نوع تحلیل');
+    if (sw) warnings.push(sw);
+
+    return { subtitle: subtitle, meta: [
+      { k: 'رشته', v: 'کشاورزی / علوم زیستی' },
+      { k: 'هدف', v: goal === 'design' ? 'طرح آزمایشی' : (goal === 'correlation' ? 'همبستگی صفات' : 'توصیفی') },
+      { k: 'تعداد مشاهدات', v: v.sampleSize || 'ثبت نشده' }
+    ], steps: steps, warnings: warnings };
+  }
+
+  function buildPlanMedicine(v) {
+    const goal = v.goal || 'compare';
+    const steps = baseSteps();
+    const warnings = [];
+    let subtitle = 'مسیر پزشکی / سلامت';
+
+    if (goal === 'compare') {
+      const outcomeType = v.outcomeType || 'quant';
+      steps.push(compareEngine(outcomeType, v.numGroups, v.independent, v.normal));
+      if (!outcomeType || !v.numGroups || (v.numGroups !== '1' && !v.independent)) {
+        warnings.push({ text: 'برخی مشخصات (نوع پیامد، تعداد گروه یا استقلال گروه‌ها) کامل نیست؛ توصیه بالا را پس از تکمیل اطلاعات بازبینی کنید.', alt: '' });
+      }
+      if (v.hasCovariate === 'yes' && outcomeType === 'quant') {
+        steps.push(step('کنترل متغیر مخدوشگر', [
+          { k: 'روش پیشنهادی', v: 'ANCOVA یا رگرسیون چندگانه با کوواریت' },
+          { k: 'چرا', v: 'وقتی متغیر مخدوشگر شناخته‌شده دارید، کنترل آماری آن دقت مقایسه بین گروه‌ها را بالا می‌برد.' }
+        ], ['SPSS', 'R']));
+      }
+      if (v.repeated === 'yes') {
+        steps.push(step('تحلیل اندازه‌گیری‌های تکراری', [
+          { k: 'روش پیشنهادی', v: 'Mixed-Effects Model یا GEE' },
+          { k: 'چرا', v: 'برای مدل کردن روند تغییرات در طول زمان همراه با تفاوت بین گروه‌ها، این مدل‌ها از ANOVA ساده انعطاف‌پذیرترند و داده گمشده را بهتر مدیریت می‌کنند.' }
+        ], ['R', 'SPSS']));
+      }
+      subtitle = 'مقایسه گروه‌های درمانی';
+    } else if (goal === 'regression') {
+      const p = Number(v.numPredictors) || 1;
+      steps.push(step('مدل پیش‌بینی/تبیین', [
+        { k: 'روش پیشنهادی', v: p > 1 ? 'Multiple Linear/Logistic Regression (بسته به نوع پیامد)' : 'Simple Linear/Logistic Regression' },
+        { k: 'پیش‌فرض‌ها', v: 'خطی بودن رابطه (برای رگرسیون خطی)؛ استقلال مشاهدات؛ عدم هم‌خطی شدید بین متغیرها.' }
+      ], ['SPSS', 'R']));
+      const sw = sampleSizeWarning(v.sampleSize, p * 10, 'رگرسیون با ' + p + ' متغیر مستقل (قاعده EPV/۱۰ مشاهده به ازای هر متغیر)');
+      if (sw) warnings.push(sw);
+      subtitle = 'رگرسیون بالینی';
+    } else if (goal === 'diagnostic') {
+      steps.push(step('ارزیابی دقت تشخیصی', [
+        { k: 'روش پیشنهادی', v: 'محاسبه حساسیت، ویژگی، ارزش اخباری مثبت/منفی و منحنی ROC/AUC' },
+        { k: 'پیش‌فرض‌ها', v: 'وجود معیار طلایی (Gold Standard) مستقل برای مقایسه.' }
+      ], ['SPSS', 'R', 'MedCalc']));
+      subtitle = 'مطالعه دقت تشخیصی';
+    } else {
+      const sg = v.survGroups || '1';
+      steps.push(step('توصیف زمان تا رویداد', [{ k: 'روش پیشنهادی', v: 'Kaplan–Meier' }, { k: 'پیش‌فرض‌ها', v: 'سانسور تصادفی و بی‌ارتباط با پیامد.' }], ['SPSS', 'R']));
+      if (sg !== '1') {
+        steps.push(step('مقایسه بقا بین گروه‌ها', [{ k: 'روش پیشنهادی', v: 'Log-Rank Test' }], ['SPSS', 'R']));
+        steps.push(step('بررسی عوامل مؤثر بر بقا', [{ k: 'روش پیشنهادی', v: 'Cox Proportional Hazards' }, { k: 'پیش‌فرض‌ها', v: 'فرض خطر متناسب (Proportional Hazards) باید بررسی شود.' }], ['SPSS', 'R']));
+      }
+      subtitle = 'تحلیل بقا';
+    }
+    steps.push(...tailSteps());
+    if (goal !== 'regression') {
+      const sw2 = sampleSizeWarning(v.sampleSize, 30, 'این نوع تحلیل');
+      if (sw2) warnings.push(sw2);
+    }
+
+    return { subtitle: subtitle, meta: [
+      { k: 'رشته', v: 'پزشکی / سلامت' },
+      { k: 'هدف', v: goal === 'compare' ? 'مقایسه گروه‌های درمانی' : (goal === 'regression' ? 'رگرسیون' : (goal === 'diagnostic' ? 'دقت تشخیصی' : 'تحلیل بقا')) },
+      { k: 'تعداد بیماران', v: v.sampleSize || 'ثبت نشده' }
+    ], steps: steps, warnings: warnings };
+  }
+
+  function buildPlanEngineering(v) {
+    const goal = v.goal || 'doe';
+    const steps = baseSteps();
+    const warnings = [];
+    let subtitle = 'مسیر مهندسی / علوم پایه';
+
+    if (goal === 'doe') {
+      const nf = v.numFactors || '1';
+      let method = 'One-Way ANOVA';
+      if (nf === '2') method = 'Two-Way Factorial ANOVA / Response Surface Methodology';
+      if (nf === '3') method = 'Full/Fractional Factorial Design + ANOVA';
+      steps.push(step('طراحی و تحلیل آزمایش (DOE)', [{ k: 'روش پیشنهادی', v: method }], ['R', 'Minitab', 'SPSS']));
+      const reps = Number(v.numReplications) || 0;
+      if (reps > 0 && reps < 3) {
+        warnings.push({ text: 'تعداد تکرار واردشده (' + reps + ') برای برآورد پایدار خطای آزمایشی کم به‌نظر می‌رسد.', alt: 'حداقل ۳ تکرار برای اکثر طرح‌های آزمایشی توصیه می‌شود.' });
+      }
+      subtitle = 'طراحی آزمایش مهندسی';
+    } else if (goal === 'regression') {
+      const p = Number(v.numPredictors) || 1;
+      steps.push(step('مدل رگرسیونی', [{ k: 'روش پیشنهادی', v: p > 1 ? 'Multiple Linear Regression' : 'Simple Linear Regression' }, { k: 'پیش‌فرض‌ها', v: 'خطی بودن، استقلال و همگنی واریانس خطاها؛ عدم هم‌خطی شدید (VIF).' }], ['R', 'Python', 'SPSS']));
+      const sw = sampleSizeWarning(v.sampleSize, p * 10, 'رگرسیون با ' + p + ' متغیر مستقل');
+      if (sw) warnings.push(sw);
+      subtitle = 'رگرسیون مهندسی';
+    } else {
+      steps.push(step('پایش فرآیند', [
+        { k: 'روش پیشنهادی', v: 'نمودارهای کنترل کیفیت (X̄-R یا X̄-S Control Charts)' },
+        { k: 'پیش‌فرض‌ها', v: 'زیرگروه‌ها باید تحت شرایط یکسان و به‌طور منظم نمونه‌برداری شده باشند.' }
+      ], ['R', 'Minitab']));
+      subtitle = 'کنترل کیفیت آماری';
+    }
+    steps.push(...tailSteps());
+
+    return { subtitle: subtitle, meta: [
+      { k: 'رشته', v: 'مهندسی / علوم پایه' },
+      { k: 'هدف', v: goal === 'doe' ? 'طراحی آزمایش' : (goal === 'regression' ? 'رگرسیون' : 'کنترل کیفیت') }
+    ], steps: steps, warnings: warnings };
+  }
+
+  function buildPlanEconomics(v) {
+    const goal = v.goal || 'crosssection';
+    const steps = baseSteps();
+    const warnings = [];
+    let subtitle = 'مسیر اقتصاد';
+
+    if (goal === 'crosssection') {
+      const p = Number(v.numPredictors) || 1;
+      steps.push(step('رگرسیون مقطعی', [{ k: 'روش پیشنهادی', v: p > 1 ? 'Multiple Linear/Logistic Regression' : 'Simple Regression' }, { k: 'پیش‌فرض‌ها', v: 'همگنی واریانس خطاها (وگرنه از خطای استاندارد Robust/HC استفاده کنید)؛ عدم هم‌خطی شدید.' }], ['R', 'Stata', 'Python']));
+      const sw = sampleSizeWarning(v.sampleSize, p * 10, 'رگرسیون با ' + p + ' متغیر مستقل');
+      if (sw) warnings.push(sw);
+      subtitle = 'اقتصادسنجی مقطعی';
+    } else if (goal === 'timeseries') {
+      steps.push(step('شناخت سری زمانی', [{ k: 'کار لازم', v: 'بررسی روند، ایستایی (Stationarity)، ACF/PACF' }], ['R', 'Stata', 'Python']));
+      steps.push(step('مدل پیش‌بینی', [{ k: 'روش پیشنهادی', v: 'ARIMA / ETS' }, { k: 'پیش‌فرض‌ها', v: 'ایستایی سری (در صورت نیاز با تفاضل‌گیری)؛ عدم وجود همبستگی باقیمانده در مدل نهایی.' }], ['R', 'Stata', 'Python']));
+      const nObs = Number(v.numObservations) || 0;
+      if (nObs > 0 && nObs < 50) {
+        warnings.push({ text: 'تعداد مشاهدات زمانی (' + nObs + ') کمتر از حداقل رایج (۵۰ نقطه) برای مدل‌های ARIMA پایدار است.', alt: '' });
+      }
+      subtitle = 'اقتصادسنجی سری زمانی';
+    } else {
+      steps.push(step('انتخاب مدل داده تابلویی', [
+        { k: 'روش پیشنهادی', v: 'Fixed Effects یا Random Effects (بر اساس آزمون Hausman)' },
+        { k: 'پیش‌فرض‌ها', v: 'در صورت رد فرض صفر آزمون Hausman، از Fixed Effects استفاده کنید.' }
+      ], ['R', 'Stata']));
+      subtitle = 'اقتصادسنجی داده تابلویی';
+    }
+    steps.push(...tailSteps());
+
+    return { subtitle: subtitle, meta: [
+      { k: 'رشته', v: 'اقتصاد' },
+      { k: 'هدف', v: goal === 'crosssection' ? 'رگرسیون مقطعی' : (goal === 'timeseries' ? 'سری زمانی' : 'داده تابلویی') }
+    ], steps: steps, warnings: warnings };
+  }
+
+  function buildPlanGeneric(v) {
+    const steps = baseSteps();
+    const warnings = [];
+    const ng = v.numGroups || '0';
+    const vt = v.variableType || 'quant';
+
+    if (ng === '0') {
+      steps.push(step('بررسی رابطه یا توصیف داده', [
+        { k: 'روش پیشنهادی', v: vt === 'quant' ? 'Pearson/Spearman Correlation یا آمار توصیفی' : 'آمار توصیفی و جدول فراوانی' }
+      ], ['SPSS', 'R', 'Excel']));
+    } else {
+      steps.push(compareEngine(vt, ng, v.independent, 'unknown'));
+      if (!v.independent) {
+        warnings.push({ text: 'استقلال گروه‌ها مشخص نشده؛ توصیه بالا را پس از تکمیل این مورد بازبینی کنید.', alt: '' });
+      }
+    }
+    if (Number(v.numPredictors) > 1) {
+      steps.push(step('بررسی همزمان چند متغیر', [{ k: 'روش پیشنهادی', v: 'Multiple Regression' }], ['SPSS', 'R']));
+    }
+    steps.push(...tailSteps());
+    const sw = sampleSizeWarning(v.sampleSize, 30, 'این نوع تحلیل');
+    if (sw) warnings.push(sw);
+
+    return { subtitle: 'مسیر عمومی', meta: [
+      { k: 'هدف', v: ng === '0' ? 'توصیف/همبستگی' : 'مقایسه گروه‌ها' },
+      { k: 'حجم نمونه', v: v.sampleSize || 'ثبت نشده' }
+    ], steps: steps, warnings: warnings };
+  }
+
+  function collectValues() {
+    return {
+      goal: getGroupValue('goal'),
+      numGroups: getGroupValue('numGroups'),
+      independent: getGroupValue('independent'),
+      outcomeType: getGroupValue('outcomeType'),
+      normal: getGroupValue('normal'),
+      repeated: getGroupValue('repeated'),
+      hasCovariate: getGroupValue('hasCovariate'),
+      hasQuestionnaire: getGroupValue('hasQuestionnaire'),
+      hasMediation: getGroupValue('hasMediation'),
+      hasPretest: getGroupValue('hasPretest'),
+      numFactors: getGroupValue('numFactors'),
+      measuredOverTime: getGroupValue('measuredOverTime'),
+      survGroups: getGroupValue('survGroups'),
+      variableType: getGroupValue('variableType'),
+      numGroups2: val('f_numGroups2'),
+      numPredictors: val('f_numPredictors'),
+      numConstructs: val('f_numConstructs'),
+      numTreatments: val('f_numTreatments'),
+      numReplications: val('f_numReplications'),
+      designType: val('f_designType'),
+      numTraits: val('f_numTraits'),
+      numSubgroups: val('f_numSubgroups'),
+      subgroupSize: val('f_subgroupSize'),
+      numObservations: val('f_numObservations'),
+      numEntities: val('f_numEntities'),
+      numPeriods: val('f_numPeriods'),
+      sampleSize: val('f_sampleSize')
+    };
+  }
+
+  function buildPlan() {
+    const v = collectValues();
+    switch (discipline) {
+      case 'management': return buildPlanManagement(v);
+      case 'humanities': return buildPlanHumanities(v);
+      case 'psychology_education': return buildPlanPsychology(v);
+      case 'agriculture': return buildPlanAgriculture(v);
+      case 'medicine': return buildPlanMedicine(v);
+      case 'engineering': return buildPlanEngineering(v);
+      case 'economics': return buildPlanEconomics(v);
+      default: return buildPlanGeneric(v);
+    }
+  }
+
+  // ---------------------------------------------------------------
+  // Rendering + navigation
+  // ---------------------------------------------------------------
+  let lastPlanText = '';
+
+  function renderResult(plan) {
+    document.getElementById('planSubtitle').textContent = plan.subtitle;
+    document.getElementById('planMeta').innerHTML = plan.meta.map(function (m) {
+      return '<div class="meta-item"><div class="k">' + m.k + '</div><div class="v">' + m.v + '</div></div>';
+    }).join('');
+
+    const timeline = document.getElementById('timeline');
+    let textLines = ['نقشه تحلیل: ' + plan.subtitle, ''];
+    timeline.innerHTML = plan.steps.map(function (s, i) {
+      textLines.push((i + 1) + '. ' + s.title);
+      const kvHtml = s.kv.map(function (kv) {
+        textLines.push('   ' + kv.k + ': ' + kv.v);
+        return '<div class="kv"><div class="k">' + kv.k + '</div><div class="v">' + kv.v + '</div></div>';
+      }).join('');
+      const swHtml = s.software.map(function (sw) { return '<span class="software-tag">' + sw + '</span>'; }).join('');
+      return '<div class="step"><div class="step-num">' + (i + 1) + '</div>' +
+        '<details class="step-body" ' + (i < 2 ? 'open' : '') + '>' +
+        '<summary>' + s.title + '<span class="chev">▾</span></summary>' +
+        '<div class="step-detail">' + kvHtml + (swHtml ? '<div class="kv"><div class="k">نرم‌افزار</div><div class="v">' + swHtml + '</div></div>' : '') + '</div>' +
+        '</details></div>';
+    }).join('');
+    lastPlanText = textLines.join('\n');
+
+    const warningBox = document.getElementById('warningBox');
+    const warningList = document.getElementById('warningList');
+    if (plan.warnings && plan.warnings.length) {
+      warningBox.classList.remove('hidden');
+      warningList.innerHTML = plan.warnings.map(function (w) {
+        return '<div class="warning-item">' + w.text + (w.alt ? '<span class="alt">' + w.alt + '</span>' : '') + '</div>';
+      }).join('');
+    } else {
+      warningBox.classList.add('hidden');
+      warningList.innerHTML = '';
+    }
+
+    document.getElementById('formScreen').classList.add('hidden');
+    document.getElementById('resultScreen').classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  document.getElementById('generateBtn').addEventListener('click', function () {
+    if (!discipline) return;
+    if (!getGroupValue('goal') && discipline !== 'generic') {
+      alert('لطفاً هدف اصلی تحلیل را انتخاب کنید.');
+      return;
+    }
+    renderResult(buildPlan());
+  });
+
+  document.getElementById('editBtn').addEventListener('click', function () {
+    document.getElementById('resultScreen').classList.add('hidden');
+    document.getElementById('formScreen').classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  document.getElementById('copyBtn').addEventListener('click', function () {
+    const btn = document.getElementById('copyBtn');
+    const original = btn.textContent;
+    function done(ok) {
+      btn.textContent = ok ? 'کپی شد ✓' : 'کپی ممکن نشد';
+      setTimeout(function () { btn.textContent = original; }, 2000);
+    }
+    try {
+      navigator.clipboard.writeText(lastPlanText).then(function () { done(true); }).catch(function () { done(false); });
+    } catch (e) { done(false); }
+  });
+
+})();
+</script>
+
+<script>
+/* Language switcher: uses Google Website Translator (client-side, no server needed on GitHub Pages). */
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement(
+    { pageLanguage: 'fa', includedLanguages: 'fa,en,fr', autoDisplay: false },
+    'google_translate_element'
+  );
+}
+(function () {
+  function getLangFromCookie() {
+    const m = document.cookie.match(/googtrans=\/fa\/(\w+)/);
+    return m ? m[1] : 'fa';
+  }
+  function setLanguage(lang) {
+    const value = '/fa/' + lang;
+    document.cookie = 'googtrans=' + value + '; path=/';
+    document.cookie = 'googtrans=' + value + '; domain=.' + location.hostname + '; path=/';
+    location.reload();
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    const select = document.getElementById('languageSelect');
+    if (!select) return;
+    select.value = getLangFromCookie();
+    select.addEventListener('change', function () { setLanguage(this.value); });
+  });
+})();
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>
