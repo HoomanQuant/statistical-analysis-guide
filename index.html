@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نقشه تحلیل داده</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+/* @license
+Papa Parse
+v5.7.0
+https://github.com/mholt/PapaParse
+License: MIT
+*/
+((e,t)=>{"function"==typeof define&&define.amd?define([],t):"object"==typeof module&&"undefined"!=typeof exports?module.exports=t():e.Papa=t()})(this,function r(){var n="undefined"!=typeof self?self:"undefined"!=typeof window?window:void 0!==n?n:{};var s=!n.document&&!!n.postMessage,a=n.IS_PAPA_WORKER||!1,o={},h=0,w={};function q(e){return 65279===e.charCodeAt(0)?e.slice(1):e}function u(e){this._handle=null,this._finished=!1,this._completed=!1,this._halted=!1,this._input=null,this._baseIndex=0,this._partialLine="",this._rowCount=0,this._start=0,this._nextChunk=null,this.isFirstChunk=!0,this._completeResults={data:[],errors:[],meta:{}},function(e){var t=v(e);t.chunkSize=parseInt(t.chunkSize),e.step||e.chunk||(t.chunkSize=null);this._handle=new i(t),(this._handle.streamer=this)._config=t}.call(this,e),this.parseChunk=function(t,e){var i=parseInt(this._config.skipFirstNLines)||0;if(this.isFirstChunk&&0<i){let e=this._config.newline;e||(r=this._config.quoteChar||'"',e=this._handle.guessLineEndings(t,r)),t=[...t.split(e).slice(i)].join(e)}this.isFirstChunk&&U(this._config.beforeFirstChunk)&&void 0!==(r=this._config.beforeFirstChunk(t))&&(t=r),this.isFirstChunk=!1,this._halted=!1;var i=this._partialLine+t,r=(this._partialLine="",this._handle.parse(i,this._baseIndex,!this._finished));if(!this._handle.paused()&&!this._handle.aborted()){t=r.meta.cursor,i=(this._finished||(this._partialLine=i.substring(t-this._baseIndex),this._baseIndex=t),r&&r.data&&(this._rowCount+=r.data.length),this._finished||this._config.preview&&this._rowCount>=this._config.preview);if(a)n.postMessage({results:r,workerId:w.WORKER_ID,finished:i});else if(U(this._config.chunk)&&!e){if(this._config.chunk(r,this._handle),this._handle.paused()||this._handle.aborted())return void(this._halted=!0);this._completeResults=r=void 0}return this._config.step||this._config.chunk||(this._completeResults.data=this._completeResults.data.concat(r.data),this._completeResults.errors=this._completeResults.errors.concat(r.errors),this._completeResults.meta=r.meta),this._completed||!i||!U(this._config.complete)||r&&r.meta.aborted||(this._config.complete(this._completeResults,this._input),this._completed=!0),i||r&&r.meta.paused||this._nextChunk(),r}this._halted=!0},this._sendError=function(e){U(this._config.error)?this._config.error(e):a&&this._config.error&&n.postMessage({workerId:w.WORKER_ID,error:e,finished:!1})}}function d(e){var r;(e=e||{}).chunkSize||(e.chunkSize=w.RemoteChunkSize),u.call(this,e),this._nextChunk=s?function(){this._readChunk(),this._chunkLoaded()}:function(){this._readChunk()},this.stream=function(e){this._input=e,this._nextChunk()},this._readChunk=function(){if(this._finished)this._chunkLoaded();else{if(r=new XMLHttpRequest,this._config.withCredentials&&(r.withCredentials=this._config.withCredentials),s||(r.onload=m(this._chunkLoaded,this),r.onerror=m(this._chunkError,this)),r.ontimeout=m(this._chunkTimeout,this),r.open(this._config.downloadRequestBody?"POST":"GET",this._input,!s),this._config.downloadTimeout&&!s&&(r.timeout=this._config.downloadTimeout),this._config.downloadRequestHeaders){var e,t=this._config.downloadRequestHeaders;for(e in t)r.setRequestHeader(e,t[e])}var i;this._config.chunkSize&&(i=this._start+this._config.chunkSize-1,r.setRequestHeader("Range","bytes="+this._start+"-"+i));try{r.send(this._config.downloadRequestBody)}catch(e){this._chunkError(e.message)}s&&0===r.status&&this._chunkError()}},this._chunkLoaded=function(){4===r.readyState&&(r.status<200||400<=r.status?this._chunkError():(this._start+=this._config.chunkSize||r.responseText.length,this._finished=!this._config.chunkSize||this._start>=(e=>null!==(e=e.getResponseHeader("Content-Range"))?parseInt(e.substring(e.lastIndexOf("/")+1)):-1)(r),this.parseChunk(r.responseText)))},this._chunkError=function(e){e=r.statusText||e;this._sendError(new Error(e))},this._chunkTimeout=function(){this._chunkError("Request timed out after "+this._config.downloadTimeout+"ms")}}function l(e){(e=e||{}).chunkSize||(e.chunkSize=w.LocalChunkSize),u.call(this,e);var i,r,n="undefined"!=typeof FileReader;this.stream=function(e){this._input=e,r=e.slice||e.webkitSlice||e.mozSlice,n?((i=new FileReader).onload=m(this._chunkLoaded,this),i.onerror=m(this._chunkError,this)):i=new FileReaderSync,this._nextChunk()},this._nextChunk=function(){this._finished||this._config.preview&&!(this._rowCount<this._config.preview)||this._readChunk()},this._readChunk=function(){var e=this._input,t=(this._config.chunkSize&&(t=Math.min(this._start+this._config.chunkSize,this._input.size),e=r.call(e,this._start,t)),i.readAsText(e,this._config.encoding));n||this._chunkLoaded({target:{result:t}})},this._chunkLoaded=function(e){this._start+=this._config.chunkSize,this._finished=!this._config.chunkSize||this._start>=this._input.size,this.parseChunk(e.target.result)},this._chunkError=function(){this._sendError(i.error)}}function f(e){var i;u.call(this,e=e||{}),this.stream=function(e){return i=e,this._nextChunk()},this._nextChunk=function(){var e,t;if(!this._finished)return e=this._config.chunkSize,i=e?(t=i.substring(0,e),i.substring(e)):(t=i,""),this._finished=!i,this.parseChunk(t)}}function c(e){u.call(this,e=e||{});var t=[],i=!0,r=!1;this.pause=function(){u.prototype.pause.apply(this,arguments),this._input.pause()},this.resume=function(){u.prototype.resume.apply(this,arguments),this._input.resume()},this.stream=function(e){this._input=e,this._input.on("data",this._streamData),this._input.on("end",this._streamEnd),this._input.on("error",this._streamError)},this._checkIsFinished=function(){r&&1===t.length&&(this._finished=!0)},this._nextChunk=function(){this._checkIsFinished(),t.length?this.parseChunk(t.shift()):i=!0},this._streamData=m(function(e){try{t.push("string"==typeof e?e:e.toString(this._config.encoding)),i&&(i=!1,this._checkIsFinished(),this.parseChunk(t.shift()))}catch(e){this._streamError(e)}},this),this._streamError=m(function(e){this._streamCleanUp(),this._sendError(e)},this),this._streamEnd=m(function(){this._streamCleanUp(),r=!0,this._streamData("")},this),this._streamCleanUp=m(function(){this._input.removeListener("data",this._streamData),this._input.removeListener("end",this._streamEnd),this._input.removeListener("error",this._streamError)},this)}function i(m){var n,s,a,t,o=Math.pow(2,53),h=-o,u=/^\s*-?(\d+\.?|\.\d+|\d+\.\d+)([eE][-+]?\d+)?\s*$/,d=/^((\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z)))$/,i=this,r=0,l=0,f=!1,e=!1,c=[],p={data:[],errors:[],meta:{}};function y(e){return"greedy"===m.skipEmptyLines?""===e.join("").trim():1===e.length&&0===e[0].length}function _(){if(p&&a&&(k("Delimiter","UndetectableDelimiter","Unable to auto-detect delimiting character; defaulted to '"+w.DefaultDelimiter+"'"),a=!1),m.skipEmptyLines&&(p.data=p.data.filter(function(e){return!y(e)})),g()){if(p)if(Array.isArray(p.data[0])){for(var e=0;g()&&e<p.data.length;e++)p.data[e].forEach(t);p.data.splice(0,1)}else p.data.forEach(t);function t(e){c.push(e)}}function i(e,t){for(var i=m.header?{}:[],r=0;r<e.length;r++){var n=r,s=e[r],s=((e,t)=>(e=>(m.dynamicTypingFunction&&void 0===m.dynamicTyping[e]&&(m.dynamicTyping[e]=m.dynamicTypingFunction(e)),!0===(m.dynamicTyping[e]||m.dynamicTyping)))(e)?"true"===t||"TRUE"===t||"false"!==t&&"FALSE"!==t&&((e=>{if(u.test(e)){e=parseFloat(e);if(h<e&&e<o)return 1}})(t)?parseFloat(t):d.test(t)?new Date(t):""===t?null:t):t)(n=m.header?r>=c.length?"__parsed_extra":c[r]:n,s=m.transform?m.transform(s,n):s);"__parsed_extra"===n?(i[n]=i[n]||[],i[n].push(s)):i[n]=s}return m.header&&(r>c.length?k("FieldMismatch","TooManyFields","Too many fields: expected "+c.length+" fields but parsed "+r,l+t):r<c.length&&k("FieldMismatch","TooFewFields","Too few fields: expected "+c.length+" fields but parsed "+r,l+t)),i}var r;p&&(m.header||m.dynamicTyping||m.transform)&&(r=1,!p.data.length||Array.isArray(p.data[0])?(p.data=p.data.map(i),r=p.data.length):p.data=i(p.data,0),m.header&&p.meta&&(p.meta.fields=c),l+=r)}function g(){return m.header&&0===c.length}function k(e,t,i,r){e={type:e,code:t,message:i};void 0!==r&&(e.row=r),p.errors.push(e)}U(m.step)&&(t=m.step,m.step=function(e){p=e,g()?_():(_(),0!==p.data.length&&(r+=e.data.length,m.preview&&r>m.preview?s.abort():(p.data=p.data[0],t(p,i))))}),this.parse=function(e,t,i){var r=m.quoteChar||'"',r=(m.newline||(m.newline=this.guessLineEndings(e,r)),a=!1,m.delimiter?U(m.delimiter)&&(m.delimiter=m.delimiter(e),p.meta.delimiter=m.delimiter):((r=((e,t,i,r,n)=>{var s,a,o,h;n=n||[",","\t","|",";",w.RECORD_SEP,w.UNIT_SEP];for(var u=0;u<n.length;u++){for(var d,l=n[u],f=0,c=0,p=0,_=(o=void 0,new E({comments:r,delimiter:l,newline:t,preview:10}).parse(e)),g=0;g<_.data.length;g++)i&&y(_.data[g])?p++:(d=_.data[g].length,c+=d,void 0===o?o=d:0<d&&(f+=Math.abs(d-o),o=d));0<_.data.length&&(c/=_.data.length-p),1.99<c&&(void 0===a||f<a||f===a&&h<c)&&(a=f,s=l,h=c)}return{successful:!!(m.delimiter=s),bestDelimiter:s}})(e,m.newline,m.skipEmptyLines,m.comments,m.delimitersToGuess)).successful?m.delimiter=r.bestDelimiter:(a=!0,m.delimiter=w.DefaultDelimiter),p.meta.delimiter=m.delimiter),v(m));return r.header=g(),m.preview&&m.header&&r.preview++,n=e,s=new E(r),p=s.parse(n,t,i),_(),f?{meta:{paused:!0}}:p||{meta:{paused:!1}}},this.paused=function(){return f},this.pause=function(){f=!0,s.abort(),n=U(m.chunk)?"":n.substring(s.getCharIndex())},this.resume=function(){i.streamer._halted?(f=!1,i.streamer.parseChunk(n,!0)):setTimeout(i.resume,3)},this.aborted=function(){return e},this.abort=function(){e=!0,s.abort(),p.meta.aborted=!0,U(m.complete)&&m.complete(p),n=""},this.guessLineEndings=function(e,t){e=e.substring(0,1048576);var t=new RegExp(P(t)+"([^]*?)"+P(t),"gm"),i=(e=e.replace(t,"")).split("\r"),t=e.split("\n"),e=1<t.length&&t[0].length<i[0].length;if(1===i.length||e)return"\n";for(var r=0,n=0;n<i.length;n++)"\n"===i[n][0]&&r++;return r>=i.length/2?"\r\n":"\r"}}function P(e){return e.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}function E(C){var S=(C=C||{}).delimiter,O=C.newline,x=C.comments,T=C.step,I=C.preview,A=C.fastMode,D=null,L=!1,F=null==C.quoteChar?'"':C.quoteChar,z=F;if(void 0!==C.escapeChar&&(z=C.escapeChar),("string"!=typeof S||-1<w.BAD_DELIMITERS.indexOf(S))&&(S=","),x===S)throw new Error("Comment character same as delimiter");!0===x?x="#":("string"!=typeof x||-1<w.BAD_DELIMITERS.indexOf(x))&&(x=!1),"\n"!==O&&"\r"!==O&&"\r\n"!==O&&(O="\n");var M=0,j=!1;this.parse=function(i,t,r){if("string"!=typeof i)throw new Error("Input must be a string");var n=i.length,e=S.length,s=O.length,a=x.length,o=U(T),h=[],u=[],d=[],l=M=0;if(!i)return b();if(A||!1!==A&&-1===i.indexOf(F)){for(var f=i.split(O),c=0;c<f.length;c++){if(d=f[c],M+=d.length,c!==f.length-1)M+=O.length;else if(r)return b();if(!x||d.substring(0,a)!==x){if(o){if(h=[],k(d.split(S)),R(),j)return b()}else k(d.split(S));if(I&&I<=c)return h=h.slice(0,I),b(!0)}}return b()}for(var p=i.indexOf(S,M),_=i.indexOf(O,M),g=new RegExp(P(z)+P(F),"g"),m=i.indexOf(F,M);;)if(i[M]===F)for(m=M,M++;;){if(-1===(m=i.indexOf(F,m+1)))return r||u.push({type:"Quotes",code:"MissingQuotes",message:"Quoted field unterminated",row:h.length,index:M}),E();if(m===n-1)return E(i.substring(M,m).replace(g,F));if(F===z&&i[m+1]===z)m++;else if(F===z||0===m||i[m-1]!==z){-1!==p&&p<m+1&&(p=i.indexOf(S,m+1));var y=w(-1===(_=-1!==_&&_<m+1?i.indexOf(O,m+1):_)?p:Math.min(p,_));if(i.substr(m+1+y,e)===S){d.push(i.substring(M,m).replace(g,F)),i[M=m+1+y+e]!==F&&(m=i.indexOf(F,M)),p=i.indexOf(S,M),_=i.indexOf(O,M);break}y=w(_);if(i.substring(m+1+y,m+1+y+s)===O){if(d.push(i.substring(M,m).replace(g,F)),v(m+1+y+s),p=i.indexOf(S,M),m=i.indexOf(F,M),o&&(R(),j))return b();if(I&&h.length>=I)return b(!0);break}u.push({type:"Quotes",code:"InvalidQuotes",message:"Trailing quote on quoted field is malformed",row:h.length,index:M}),m++}}else if(x&&0===d.length&&i.substring(M,M+a)===x){if(-1===_)return b();M=_+s,_=i.indexOf(O,M),p=i.indexOf(S,M)}else if(-1!==p&&(p<_||-1===_))d.push(i.substring(M,p)),M=p+e,p=i.indexOf(S,M);else{if(-1===_)break;if(d.push(i.substring(M,_)),v(_+s),o&&(R(),j))return b();if(I&&h.length>=I)return b(!0)}return E();function k(e){h.push(e),l=M}function w(e){var t=0;return t=-1!==e&&(e=i.substring(m+1,e))&&""===e.trim()?e.length:t}function E(e){return r||(void 0===e&&(e=i.substring(M)),d.push(e),M=n,k(d),o&&R()),b()}function v(e){M=e,k(d),d=[],_=i.indexOf(O,M)}function b(e){if(C.header&&!t&&h.length&&!L){var s=h[0],a=Object.create(null),o=new Set(s);let n=!1;for(let r=0;r<s.length;r++){let i=q(s[r]);if(a[i=U(C.transformHeader)?C.transformHeader(i,r):i]){let e,t=a[i];for(;e=i+"_"+t,t++,o.has(e););o.add(e),s[r]=e,a[i]++,n=!0,(D=null===D?{}:D)[e]=i}else a[i]=1,s[r]=i;o.add(i)}n&&console.warn("Duplicate headers found and renamed."),L=!0}return{data:h,errors:u,meta:{delimiter:S,linebreak:O,aborted:j,truncated:!!e,cursor:l+(t||0),renamedHeaders:D}}}function R(){T(b()),h=[],u=[]}},this.abort=function(){j=!0},this.getCharIndex=function(){return M}}function p(e){var t=e.data,i=o[t.workerId],r=!1;if(t.error)i.userError(t.error,t.file);else if(t.results&&t.results.data){var n={abort:function(){r=!0,_(t.workerId,{data:[],errors:[],meta:{aborted:!0}})},pause:g,resume:g};if(U(i.userStep)){for(var s=0;s<t.results.data.length&&(i.userStep({data:t.results.data[s],errors:t.results.errors,meta:t.results.meta},n),!r);s++);delete t.results}else U(i.userChunk)&&(i.userChunk(t.results,n,t.file),delete t.results)}t.finished&&!r&&_(t.workerId,t.results)}function _(e,t){var i=o[e];U(i.userComplete)&&i.userComplete(t),i.terminate(),delete o[e]}function g(){throw new Error("Not implemented.")}function v(e){if("object"!=typeof e||null===e)return e;var t,i=Array.isArray(e)?[]:{};for(t in e)i[t]=v(e[t]);return i}function m(e,t){return function(){e.apply(t,arguments)}}function U(e){return"function"==typeof e}return w.parse=function(e,t){var i=(t=t||{}).dynamicTyping||!1;U(i)&&(t.dynamicTypingFunction=i,i={});if(t.dynamicTyping=i,t.transform=!!U(t.transform)&&t.transform,void 0!==t.downloadTimeout){var i=parseInt(t.downloadTimeout);if(isNaN(i))throw new Error("Config downloadTimeout value ("+t.downloadTimeout+") not parsable by parseInt(val).");t.downloadTimeout=i}if(!t.worker||!w.WORKERS_SUPPORTED)return i=null,w.NODE_STREAM_INPUT,"string"==typeof e?(e=q(e),i=new(t.download?d:f)(t)):!0===e.readable&&U(e.read)&&U(e.on)?i=new c(t):(n.File&&e instanceof File||e instanceof Object)&&(i=new l(t)),i.stream(e);(i=(()=>{var e;return!!w.WORKERS_SUPPORTED&&(e=(()=>{var e=n.URL||n.webkitURL||null,t=r.toString();return w.BLOB_URL||(w.BLOB_URL=e.createObjectURL(new Blob(["var global = (function() { if (typeof self !== 'undefined') { return self; } if (typeof window !== 'undefined') { return window; } if (typeof global !== 'undefined') { return global; } return {}; })(); global.IS_PAPA_WORKER=true; ","(",t,")();"],{type:"text/javascript"})))})(),(e=new n.Worker(e)).onmessage=p,e.id=h++,o[e.id]=e)})()).userStep=t.step,i.userChunk=t.chunk,i.userComplete=t.complete,i.userError=t.error,t.step=U(t.step),t.chunk=U(t.chunk),t.complete=U(t.complete),t.error=U(t.error),delete t.worker,i.postMessage({input:e,config:t,workerId:i.id})},w.unparse=function(e,t){var s=!1,g=!0,m=",",y="\r\n",a='"',o=a+a,i=!1,r=null,h=!1,u=((()=>{if("object"==typeof t){if("string"!=typeof t.delimiter||w.BAD_DELIMITERS.filter(function(e){return-1!==t.delimiter.indexOf(e)}).length||(m=t.delimiter),"boolean"!=typeof t.quotes&&"function"!=typeof t.quotes&&!Array.isArray(t.quotes)||(s=t.quotes),"boolean"!=typeof t.skipEmptyLines&&"string"!=typeof t.skipEmptyLines||(i=t.skipEmptyLines),"string"==typeof t.newline&&(y=t.newline),"string"==typeof t.quoteChar&&(a=t.quoteChar,o=a+a),"boolean"==typeof t.header&&(g=t.header),Array.isArray(t.columns)){if(0===t.columns.length)throw new Error("Option columns is empty");r=t.columns}void 0!==t.escapeChar&&(o=t.escapeChar+a),t.escapeFormulae instanceof RegExp?h=t.escapeFormulae:"boolean"==typeof t.escapeFormulae&&t.escapeFormulae&&(h=/^[=+\-@\t\r].*$/)}})(),new RegExp(P(a),"g"));"string"==typeof e&&(e=JSON.parse(e));if(Array.isArray(e)){if(!e.length||Array.isArray(e[0]))return n(null,e,i);if("object"==typeof e[0])return n(r||Object.keys(e[0]),e,i)}else if("object"==typeof e)return"string"==typeof e.data&&(e.data=JSON.parse(e.data)),Array.isArray(e.data)&&(e.fields||(e.fields=e.meta&&e.meta.fields||r),e.fields||(e.fields=Array.isArray(e.data[0])?e.fields:"object"==typeof e.data[0]?Object.keys(e.data[0]):[]),Array.isArray(e.data[0])||"object"==typeof e.data[0]||(e.data=[e.data])),n(e.fields||[],e.data||[],i);throw new Error("Unable to serialize unrecognized input");function n(e,t,i){var r="",n=("string"==typeof e&&(e=JSON.parse(e)),"string"==typeof t&&(t=JSON.parse(t)),Array.isArray(e)&&0<e.length),s=!Array.isArray(t[0]);if(n&&g){for(var a=0;a<e.length;a++)0<a&&(r+=m),r+=k(e[a],a);0<t.length&&(r+=y)}for(var o=0;o<t.length;o++){var h=(n?e:t[o]).length,u=!1,d=n?0===Object.keys(t[o]).length:0===t[o].length;if(i&&!n&&(u="greedy"===i?""===t[o].join("").trim():1===t[o].length&&0===t[o][0].length),"greedy"===i&&n){for(var l=[],f=0;f<h;f++){var c=s?e[f]:f;l.push(t[o][c])}u=""===l.join("").trim()}if(!u){for(var p=0;p<h;p++){0<p&&!d&&(r+=m);var _=n&&s?e[p]:p;r+=k(t[o][_],p)}o<t.length-1&&(!i||0<h&&!d)&&(r+=y)}}return r}function k(e,t){var i,r,n;return null==e?"":e.constructor===Date?isNaN(e.getTime())?"":e.toISOString():(n=!1,h&&"string"==typeof e&&h.test(e)&&(e="'"+e,n=!0),r=(i=e.toString()).replace(u,o),(n=n||!0===s||"function"==typeof s&&s(e,t)||Array.isArray(s)&&s[t]||((e,t)=>{for(var i=0;i<t.length;i++)if(-1<e.indexOf(t[i]))return!0;return!1})(r,w.BAD_DELIMITERS)||-1<r.indexOf(m)||-1<i.indexOf(a)||" "===r.charAt(0)||" "===r.charAt(r.length-1))?a+r+a:r)}},w.RECORD_SEP=String.fromCharCode(30),w.UNIT_SEP=String.fromCharCode(31),w.BYTE_ORDER_MARK="\ufeff",w.BAD_DELIMITERS=["\r","\n",'"',w.BYTE_ORDER_MARK],w.WORKERS_SUPPORTED=!s&&!!n.Worker,w.NODE_STREAM_INPUT=1,w.LocalChunkSize=10485760,w.RemoteChunkSize=5242880,w.DefaultDelimiter=",",w.Parser=E,w.ParserHandle=i,w.NetworkStreamer=d,w.FileStreamer=l,w.StringStreamer=f,w.ReadableStreamStreamer=c,a&&(n.onmessage=function(e){e=e.data;void 0===w.WORKER_ID&&e&&(w.WORKER_ID=e.workerId);"string"==typeof e.input?n.postMessage({workerId:w.WORKER_ID,results:w.parse(e.input,e.config),finished:!0}):(n.File&&e.input instanceof File||e.input instanceof Object)&&(e=w.parse(e.input,e.config))&&n.postMessage({workerId:w.WORKER_ID,results:e,finished:!0})}),(d.prototype=Object.create(u.prototype)).constructor=d,(l.prototype=Object.create(u.prototype)).constructor=l,(f.prototype=Object.create(f.prototype)).constructor=f,(c.prototype=Object.create(u.prototype)).constructor=c,w});
+</script>
+<script>
+/* simple-statistics (MIT License) - https://github.com/simple-statistics/simple-statistics */
+!function(r,t){"object"==typeof exports&&"undefined"!=typeof module?t(exports):"function"==typeof define&&define.amd?define(["exports"],t):t((r="undefined"!=typeof globalThis?globalThis:r||self).ss={})}(this,function(r){"use strict";function t(r,t){for(var e=[],n=0;n<r;n++){for(var a=[],o=0;o<t;o++)a.push(0);e.push(a)}return e}function e(r){return r.slice().sort(function(r,t){return r-t})}function n(r){for(var t,e=0,n=0;n<r.length;n++)0!==n&&r[n]===t||(t=r[n],e++);return e}function a(r,t,e,n){var a;if(r>0){var o=(e[t]-e[r-1])/(t-r+1);a=n[t]-n[r-1]-(t-r+1)*o*o}else a=n[t]-e[t]*e[t]/(t+1);return a<0?0:a}function o(r,t,e,n,i,u,h){if(!(r>t)){var f=Math.floor((r+t)/2);n[e][f]=n[e-1][f-1],i[e][f]=f;var l=e;r>e&&(l=Math.max(l,i[e][r-1]||0)),l=Math.max(l,i[e-1][f]||0);var s,c,v,g=f-1;t<n[0].length-1&&(g=Math.min(g,i[e][t+1]||0));for(var w=g;w>=l&&!((s=a(w,f,u,h))+n[e-1][l-1]>=n[e][f]);--w)(c=a(l,f,u,h)+n[e-1][l-1])<n[e][f]&&(n[e][f]=c,i[e][f]=l),l++,(v=s+n[e-1][w-1])<n[e][f]&&(n[e][f]=v,i[e][f]=w);o(r,f-1,e,n,i,u,h),o(f+1,t,e,n,i,u,h)}}function i(r){if(0===r.length)return 0;var t,e=r[0],n=0;if("number"!=typeof e)return Number.NaN;for(var a=1;a<r.length;a++){if("number"!=typeof r[a])return Number.NaN;t=e+r[a],Math.abs(e)>=Math.abs(r[a])?n+=e-t+r[a]:n+=r[a]-t+e,e=t}return e+n}function u(r){if(0===r.length)throw new Error("mean requires at least one data point");return i(r)/r.length}function h(r,t){var e,n,a=u(r),o=0;if(2===t)for(n=0;n<r.length;n++)o+=(e=r[n]-a)*e;else for(n=0;n<r.length;n++)o+=Math.pow(r[n]-a,t);return o}function f(r){if(r.length<2)throw new Error("sampleVariance requires at least two data points");return h(r,2)/(r.length-1)}function l(r){var t=f(r);return Math.sqrt(t)}function s(r,t,e,n){return(r*t+e*n)/(t+n)}function c(r){if(0===r.length)throw new Error("max requires at least one data point");for(var t=r[0],e=1;e<r.length;e++)r[e]>t&&(t=r[e]);return t}function v(r){if(0===r.length)throw new Error("min requires at least one data point");for(var t=r[0],e=1;e<r.length;e++)r[e]<t&&(t=r[e]);return t}function g(r,t){var e=(r.length-1)*t;if(0===r.length)throw new Error("quantile requires at least one data point.");if(t<0||t>1)throw new Error("quantiles must be between 0 and 1");if(1===t)return r[r.length-1];if(0===t)return r[0];if(e%1!=0){var n=Math.floor(e),a=Math.ceil(e),o=e-n;return r[n]+o*(r[a]-r[n])}return r[e]}function w(r,t,e,n){for(e=e||0,n=n||r.length-1;n>e;){if(n-e>600){var a=n-e+1,o=t-e+1,i=Math.log(a),u=.5*Math.exp(2*i/3),h=.5*Math.sqrt(i*u*(a-u)/a);o-a/2<0&&(h*=-1),w(r,t,Math.max(e,Math.floor(t-o*u/a+h)),Math.min(n,Math.floor(t+(a-o)*u/a+h)))}var f=r[t],l=e,s=n;for(p(r,e,t),r[n]>f&&p(r,e,n);l<s;){for(p(r,l,s),l++,s--;r[l]<f;)l++;for(;r[s]>f;)s--}r[e]===f?p(r,e,s):p(r,++s,n),s<=t&&(e=s+1),t<=s&&(n=s-1)}}function p(r,t,e){var n=r[t];r[t]=r[e],r[e]=n}function d(r,t){var e=r.slice();if(Array.isArray(t)){!function(r,t){for(var e=new Set,n=0;n<t.length;n++){var a=b(r.length,t[n]);e.add(Math.floor(a)),e.add(Math.ceil(a))}var o=Array.from(e).sort(M);m(r,o,0,o.length-1,0,r.length-1)}(e,t);for(var n=[],a=0;a<t.length;a++)n[a]=g(e,t[a]);return n}var o,i,u,h,f=b(e.length,t);return o=e,i=f,u=0,h=e.length-1,i%1==0?w(o,i,u,h):(w(o,i=Math.floor(i),u,h),w(o,i+1,i+1,h)),g(e,t)}function m(r,t,e,n,a,o){if(!(e>n)){var i=e+n>>1;w(r,t[i],a,o),m(r,t,e,i-1,a,t[i]-1),m(r,t,i+1,n,t[i]+1,o)}}function M(r,t){return r-t}function b(r,t){var e=(r-1)*t;return 1===t?r-1:0===t?0:e}function q(r){var t=d(r,.75),e=d(r,.25);if("number"==typeof t&&"number"==typeof e)return t-e}function E(r){for(var t=0,e=0;e<r.length;e++){if("number"!=typeof r[e])return Number.NaN;t+=r[e]}return t}function y(r){if(0===r.length)throw new Error("meanSimple requires at least one data point");return E(r)/r.length}function S(r){return+d(r,.5)}function N(r){for(var t=S(r),e=[],n=0;n<r.length;n++)e.push(Math.abs(r[n]-t));return S(e)}function x(r){if(0===r.length)throw new Error("mode requires at least one data point");if(1===r.length)return r[0];for(var t=r[0],e=Number.NaN,n=0,a=1,o=1;o<r.length+1;o++)r[o]!==t?(a>n&&(n=a,e=t),a=1,t=r[o]):a++;return e}function k(r,t){if(t<r[0])return 0;if(t>r[r.length-1])return 1;var e=function(r,t){var e=0,n=0,a=r.length;for(;n<a;)t<=r[e=n+a>>>1]?a=e:n=-~e;return n}(r,t);if(r[e]!==t)return e/r.length;e++;var n=function(r,t){var e=0,n=0,a=r.length;for(;n<a;)t>=r[e=n+a>>>1]?n=-~e:a=e;return n}(r,t);if(n===e)return e/r.length;var a=n-e+1;return a*(n+e)/2/a/r.length}function I(r){if(0===r.length)throw new Error("rootMeanSquare requires at least one data point");for(var t=0,e=0;e<r.length;e++)t+=Math.pow(r[e],2);return Math.sqrt(t/r.length)}function A(r,t){t=t||Math.random;for(var e,n,a=r.length;a>0;)n=Math.floor(t()*a--),e=r[a],r[a]=r[n],r[n]=e;return r}function P(r,t){return A(r.slice(),t)}function T(r,t,e){return P(r,e).slice(0,t)}function C(r,t){if(r.length!==t.length)throw new Error("sampleCovariance requires samples with equal lengths");if(r.length<2)throw new Error("sampleCovariance requires at least two data points in each sample");for(var e=u(r),n=u(t),a=0,o=0;o<r.length;o++)a+=(r[o]-e)*(t[o]-n);return a/(r.length-1)}function F(r,t){return C(r,t)/l(r)/l(t)}function R(r){for(var t=r.map(function(r,t){return[r,t]}).sort(function(r,t){return r[0]-t[0]}),e=Array(r.length),n=0;n<t.length;){for(var a=n;a+1<t.length&&t[a+1][0]===t[n][0];)a++;for(var o=(n+a)/2,i=n;i<=a;i++)e[t[i][1]]=o;n=a+1}return e}function D(r){if(0===r.length)throw new Error("variance requires at least one data point");return h(r,2)/r.length}function V(r){if(1===r.length)return 0;var t=D(r);return Math.sqrt(t)}function _(r,t,e){if(0===r.length)throw new Error(e+" requires at least one data point");if(r.length!==t.length)throw new Error(e+" requires values and weights to be the same length");for(var n=0,a=0;a<t.length;a++){if(t[a]<0)throw new Error(e+" requires weights to be non-negative");n+=t[a]}if(0===n)throw new Error(e+" requires at least one positive weight");return n}function L(r,t){for(var e=_(r,t,"weightedMean"),n=0,a=0;a<r.length;a++)n+=r[a]*t[a];return n/e}function O(r,t,e){if(e<0||e>1)throw new Error("quantiles must be between 0 and 1");if(0===e)return r[0][0];for(var n=e*t,a=0,o=0;o<r.length;o++)if((a+=r[o][1])>=n)return r[o][0];return r[r.length-1][0]}function G(r,t){return r[0]-t[0]}function z(r,t){for(var e=_(r,t,"weightedVariance"),n=L(r,t),a=0,o=0;o<r.length;o++){var i=r[o]-n;a+=t[o]*i*i}return a/e}var U=1e-4;function Q(r,t){return 0===r&&0===t?0:Math.abs((r-t)/t)}var X=function(){this.totalCount=0,this.data={}};X.prototype.train=function(r,t){for(var e in this.data[t]||(this.data[t]={}),r){var n=r[e];void 0===this.data[t][e]&&(this.data[t][e]={}),void 0===this.data[t][e][n]&&(this.data[t][e][n]=0),this.data[t][e][n]++}this.totalCount++},X.prototype.score=function(r){var t,e={};for(var n in r){var a=r[n];for(t in this.data)void 0===e[t]&&(e[t]={}),this.data[t][n]?e[t][n+"_"+a]=(this.data[t][n][a]||0)/this.totalCount:e[t][n+"_"+a]=0}var o={};for(t in e)for(var i in o[t]=0,e[t])o[t]+=e[t][i];return o};var j=[.9999999999999971,57.15623566586292,-59.59796035547549,14.136097974741746,-.4919138160976202,3399464998481189e-20,4652362892704858e-20,-9837447530487956e-20,.0001580887032249125,-.00021026444172410488,.00021743961811521265,-.0001643181065367639,8441822398385275e-20,-26190838401581408e-21,36899182659531625e-22],B=Math.log(Math.sqrt(2*Math.PI));function K(r){if(r<=0)return Number.POSITIVE_INFINITY;r--;for(var t=j[0],e=1;e<15;e++)t+=j[e]/(r+e);var n=5.2421875+r;return B+Math.log(t)-n+(r+.5)*Math.log(n)}var Y=1e6;function H(r){if("number"==typeof r)return r<0?-1:0===r?0:1;throw new TypeError("not a number")}var W={1:{.995:0,.99:0,.975:0,.95:0,.9:.02,.5:.45,.1:2.71,.05:3.84,.025:5.02,.01:6.63,.005:7.88},2:{.995:.01,.99:.02,.975:.05,.95:.1,.9:.21,.5:1.39,.1:4.61,.05:5.99,.025:7.38,.01:9.21,.005:10.6},3:{.995:.07,.99:.11,.975:.22,.95:.35,.9:.58,.5:2.37,.1:6.25,.05:7.81,.025:9.35,.01:11.34,.005:12.84},4:{.995:.21,.99:.3,.975:.48,.95:.71,.9:1.06,.5:3.36,.1:7.78,.05:9.49,.025:11.14,.01:13.28,.005:14.86},5:{.995:.41,.99:.55,.975:.83,.95:1.15,.9:1.61,.5:4.35,.1:9.24,.05:11.07,.025:12.83,.01:15.09,.005:16.75},6:{.995:.68,.99:.87,.975:1.24,.95:1.64,.9:2.2,.5:5.35,.1:10.65,.05:12.59,.025:14.45,.01:16.81,.005:18.55},7:{.995:.99,.99:1.24,.975:1.69,.95:2.17,.9:2.83,.5:6.35,.1:12.02,.05:14.07,.025:16.01,.01:18.48,.005:20.28},8:{.995:1.34,.99:1.65,.975:2.18,.95:2.73,.9:3.49,.5:7.34,.1:13.36,.05:15.51,.025:17.53,.01:20.09,.005:21.96},9:{.995:1.73,.99:2.09,.975:2.7,.95:3.33,.9:4.17,.5:8.34,.1:14.68,.05:16.92,.025:19.02,.01:21.67,.005:23.59},10:{.995:2.16,.99:2.56,.975:3.25,.95:3.94,.9:4.87,.5:9.34,.1:15.99,.05:18.31,.025:20.48,.01:23.21,.005:25.19},11:{.995:2.6,.99:3.05,.975:3.82,.95:4.57,.9:5.58,.5:10.34,.1:17.28,.05:19.68,.025:21.92,.01:24.72,.005:26.76},12:{.995:3.07,.99:3.57,.975:4.4,.95:5.23,.9:6.3,.5:11.34,.1:18.55,.05:21.03,.025:23.34,.01:26.22,.005:28.3},13:{.995:3.57,.99:4.11,.975:5.01,.95:5.89,.9:7.04,.5:12.34,.1:19.81,.05:22.36,.025:24.74,.01:27.69,.005:29.82},14:{.995:4.07,.99:4.66,.975:5.63,.95:6.57,.9:7.79,.5:13.34,.1:21.06,.05:23.68,.025:26.12,.01:29.14,.005:31.32},15:{.995:4.6,.99:5.23,.975:6.27,.95:7.26,.9:8.55,.5:14.34,.1:22.31,.05:25,.025:27.49,.01:30.58,.005:32.8},16:{.995:5.14,.99:5.81,.975:6.91,.95:7.96,.9:9.31,.5:15.34,.1:23.54,.05:26.3,.025:28.85,.01:32,.005:34.27},17:{.995:5.7,.99:6.41,.975:7.56,.95:8.67,.9:10.09,.5:16.34,.1:24.77,.05:27.59,.025:30.19,.01:33.41,.005:35.72},18:{.995:6.26,.99:7.01,.975:8.23,.95:9.39,.9:10.87,.5:17.34,.1:25.99,.05:28.87,.025:31.53,.01:34.81,.005:37.16},19:{.995:6.84,.99:7.63,.975:8.91,.95:10.12,.9:11.65,.5:18.34,.1:27.2,.05:30.14,.025:32.85,.01:36.19,.005:38.58},20:{.995:7.43,.99:8.26,.975:9.59,.95:10.85,.9:12.44,.5:19.34,.1:28.41,.05:31.41,.025:34.17,.01:37.57,.005:40},21:{.995:8.03,.99:8.9,.975:10.28,.95:11.59,.9:13.24,.5:20.34,.1:29.62,.05:32.67,.025:35.48,.01:38.93,.005:41.4},22:{.995:8.64,.99:9.54,.975:10.98,.95:12.34,.9:14.04,.5:21.34,.1:30.81,.05:33.92,.025:36.78,.01:40.29,.005:42.8},23:{.995:9.26,.99:10.2,.975:11.69,.95:13.09,.9:14.85,.5:22.34,.1:32.01,.05:35.17,.025:38.08,.01:41.64,.005:44.18},24:{.995:9.89,.99:10.86,.975:12.4,.95:13.85,.9:15.66,.5:23.34,.1:33.2,.05:36.42,.025:39.36,.01:42.98,.005:45.56},25:{.995:10.52,.99:11.52,.975:13.12,.95:14.61,.9:16.47,.5:24.34,.1:34.38,.05:37.65,.025:40.65,.01:44.31,.005:46.93},26:{.995:11.16,.99:12.2,.975:13.84,.95:15.38,.9:17.29,.5:25.34,.1:35.56,.05:38.89,.025:41.92,.01:45.64,.005:48.29},27:{.995:11.81,.99:12.88,.975:14.57,.95:16.15,.9:18.11,.5:26.34,.1:36.74,.05:40.11,.025:43.19,.01:46.96,.005:49.65},28:{.995:12.46,.99:13.57,.975:15.31,.95:16.93,.9:18.94,.5:27.34,.1:37.92,.05:41.34,.025:44.46,.01:48.28,.005:50.99},29:{.995:13.12,.99:14.26,.975:16.05,.95:17.71,.9:19.77,.5:28.34,.1:39.09,.05:42.56,.025:45.72,.01:49.59,.005:52.34},30:{.995:13.79,.99:14.95,.975:16.79,.95:18.49,.9:20.6,.5:29.34,.1:40.26,.05:43.77,.025:46.98,.01:50.89,.005:53.67},40:{.995:20.71,.99:22.16,.975:24.43,.95:26.51,.9:29.05,.5:39.34,.1:51.81,.05:55.76,.025:59.34,.01:63.69,.005:66.77},50:{.995:27.99,.99:29.71,.975:32.36,.95:34.76,.9:37.69,.5:49.33,.1:63.17,.05:67.5,.025:71.42,.01:76.15,.005:79.49},60:{.995:35.53,.99:37.48,.975:40.48,.95:43.19,.9:46.46,.5:59.33,.1:74.4,.05:79.08,.025:83.3,.01:88.38,.005:91.95},70:{.995:43.28,.99:45.44,.975:48.76,.95:51.74,.9:55.33,.5:69.33,.1:85.53,.05:90.53,.025:95.02,.01:100.42,.005:104.22},80:{.995:51.17,.99:53.54,.975:57.15,.95:60.39,.9:64.28,.5:79.33,.1:96.58,.05:101.88,.025:106.63,.01:112.33,.005:116.32},90:{.995:59.2,.99:61.75,.975:65.65,.95:69.13,.9:73.29,.5:89.33,.1:107.57,.05:113.14,.025:118.14,.01:124.12,.005:128.3},100:{.995:67.33,.99:70.06,.975:74.22,.95:77.93,.9:82.36,.5:99.33,.1:118.5,.05:124.34,.025:129.56,.01:135.81,.005:140.17}};var J=Math.sqrt(2*Math.PI);function Z(r){for(var t=r,e=r,n=1;n<30;n++)t+=e*=r*r/(2*n+1);return Math.round(1e4*(.5+t/J*Math.exp(-r*r/2)))/1e4}for(var $=[],rr=0;rr<=3.09;rr+=.01)$.push(Z(rr));function tr(r){var t=1/(1+.5*Math.abs(r)),e=t*Math.exp(-r*r+((((((((.17087277*t-.82215223)*t+1.48851587)*t-1.13520398)*t+.27886807)*t-.18628806)*t+.09678418)*t+.37409196)*t+1.00002368)*t-1.26551223);return r>=0?1-e:e-1}function er(r){if(r<0)throw new Error("factorial requires a non-negative value");if(Math.floor(r)!==r)throw new Error("factorial requires an integer input");for(var t=1,e=2;e<=r;e++)t*=e;return t}function nr(r){var t=8*(Math.PI-3)/(3*Math.PI*(4-Math.PI)),e=Math.sqrt(Math.sqrt(Math.pow(2/(Math.PI*t)+Math.log(1-r*r)/2,2)-Math.log(1-r*r)/t)-(2/(Math.PI*t)+Math.log(1-r*r)/2));return r>=0?e:-e}function ar(r,t){for(var e=0,n=0;n<r.length;n++){var a=r[n]-t[n];e+=a*a}return Math.sqrt(e)}function or(r,t){return r.map(function(r){for(var e=Number.MAX_VALUE,n=-1,a=0;a<t.length;a++){var o=ar(r,t[a]);o<e&&(e=o,n=a)}return n})}function ir(r,e,n){for(var a=r[0].length,o=t(n,a),i=Array(n).fill(0),u=r.length,h=0;h<u;h++){for(var f=r[h],l=e[h],s=o[l],c=0;c<a;c++)s[c]+=f[c];i[l]+=1}for(var v=0;v<n;v++){if(0===i[v])throw new Error("Centroid "+v+" has no friends");for(var g=o[v],w=0;w<a;w++)g[w]/=i[v]}return o}function ur(r,t){for(var e=0,n=0;n<r.length;n++)e+=ar(r[n],t[n]);return e}var hr=Math.sqrt(2*Math.PI),fr={gaussian:function(r){return Math.exp(-.5*r*r)/hr}},lr={nrd:function(r){var t=l(r),e=q(r);return"number"==typeof e&&(t=Math.min(t,e/1.34)),1.06*t*Math.pow(r.length,-.2)}};function sr(r,t,e){var n,a;if(void 0===t)n=fr.gaussian;else if("string"==typeof t){if(!fr[t])throw new Error('Unknown kernel "'+t+'"');n=fr[t]}else n=t;if(void 0===e)a=lr.nrd(r);else if("string"==typeof e){if(!lr[e])throw new Error('Unknown bandwidth method "'+e+'"');a=lr[e](r)}else a=e;return function(t){var e=0,o=0;for(e=0;e<r.length;e++)o+=n((t-r[e])/a);return o/a/r.length}}var cr=function(){this.weights=[],this.bias=0};function vr(r,e){if(r.length!==e.length)throw new Error("must have exactly as many labels as points");for(var n=function(r){for(var t=1+c(r),e=Array(t),n=0;n<r.length;n++){var a=r[n];void 0===e[a]&&(e[a]=[]),e[a].push(n)}return e}(e),a=function(r){for(var e=r.length,n=t(e,e),a=0;a<e;a++)for(var o=0;o<a;o++)n[a][o]=ar(r[a],r[o]),n[o][a]=n[a][o];return n}(r),o=[],i=0;i<r.length;i++){var u=0;if(n[e[i]].length>1){var h=wr(i,n[e[i]],a),f=gr(i,e,n,a);u=(f-h)/Math.max(h,f)}o.push(u)}return o}function gr(r,t,e,n){for(var a=t[r],o=Number.MAX_VALUE,i=0;i<e.length;i++)if(i!==a){var u=wr(r,e[i],n);u<o&&(o=u)}return o}function wr(r,t,e){for(var n=0,a=0,o=0;o<t.length;o++)t[o]!==r&&(n+=e[r][t[o]],a++);return n/a}cr.prototype.predict=function(r){if(r.length!==this.weights.length)return null;for(var t=0,e=0;e<this.weights.length;e++)t+=this.weights[e]*r[e];return(t+=this.bias)>0?1:0},cr.prototype.train=function(r,t){if(0!==t&&1!==t)return null;r.length!==this.weights.length&&(this.weights=r.slice(),this.bias=1);var e=this.predict(r);if("number"==typeof e&&e!==t){for(var n=t-e,a=0;a<this.weights.length;a++)this.weights[a]+=n*r[a];this.bias+=n}return this},r.BayesianClassifier=X,r.PerceptronModel=cr,r.addToMean=function(r,t,e){return r+(e-r)/(t+1)},r.approxEqual=function(r,t,e){return void 0===e&&(e=U),Q(r,t)<=e},r.average=u,r.averageSimple=y,r.bayesian=X,r.bernoulliDistribution=function(r){if(r<0||r>1)throw new Error("bernoulliDistribution requires probability to be between 0 and 1 inclusive");return[1-r,r]},r.binomialDistribution=function(r,t){if(!(t<0||t>1||r<=0||r%1!=0)){var e=Math.min(r,999999);if(0===t)return[1];if(1===t){if(r>e)return;var n=new Array(r+1).fill(0);return n[r]=1,n}var a=0,o=0,i=[],u=K(r+1),h=Math.log(t),f=Math.log1p(-t);do{i[a]=Math.exp(u-K(a+1)-K(r-a+1)+a*h+(r-a)*f),o+=i[a],a++}while(o<.9999&&a<=e);if(!(Number.isNaN(o)||o<.9999))return i}},r.bisect=function(r,t,e,n,a){if("function"!=typeof r)throw new TypeError("func must be a function");for(var o=0;o<n;o++){var i=(t+e)/2;if(0===r(i)||Math.abs((e-t)/2)<a)return i;H(r(i))===H(r(t))?t=i:e=i}throw new Error("maximum number of iterations exceeded")},r.chiSquaredDistributionTable=W,r.chiSquaredGoodnessOfFit=function(r,t,e){for(var n=0,a=t(u(r)),o=[],i=[],h=0;h<r.length;h++)void 0===o[r[h]]&&(o[r[h]]=0),o[r[h]]++;for(var f=0;f<o.length;f++)void 0===o[f]&&(o[f]=0);for(var l in a)l in o&&(i[+l]=a[l]*r.length);if(0===i.length)throw new Error("chiSquaredGoodnessOfFit requires distributionType to return a distribution for the mean of the data");for(var s=i.length-1,c=o.length-1;c>s;c--)o[s]+=o[c],o.pop();for(var v=i.length-1;v>=1;v--)i[v]<3&&(i[v-1]+=i[v],i.splice(v,1),o[v-1]+=o[v],o.splice(v,1));for(var g=0;g<o.length;g++)n+=Math.pow(o[g]-i[g],2)/i[g];if(!Number.isFinite(n))throw new Error("chiSquaredGoodnessOfFit could not compute a test statistic for this data and distribution");var w=o.length-1-1;if(w<1)throw new Error("chiSquaredGoodnessOfFit requires more data: the classes that survive collapsing leave no degrees of freedom");var p=W[w];if(void 0===p)throw new Error("chiSquaredGoodnessOfFit has no critical values tabulated for "+w+" degrees of freedom");if(void 0===p[e])throw new Error("chiSquaredGoodnessOfFit has no critical value tabulated for a significance of "+e);return p[e]<n},r.chunk=function(r,t){var e=[];if(t<1)throw new Error("chunk size must be a positive number");if(Math.floor(t)!==t)throw new Error("chunk size must be an integer");for(var n=0;n<r.length;n+=t)e.push(r.slice(n,n+t));return e},r.ckmeans=function(r,i){if(i>r.length)throw new Error("cannot generate more classes than there are data values");var u=e(r);if(1===n(u))return[u];var h=t(i,u.length),f=t(i,u.length);!function(r,t,e){for(var n=t[0].length,i=r[Math.floor(n/2)],u=[],h=[],f=0,l=void 0;f<n;++f)l=r[f]-i,0===f?(u.push(l),h.push(l*l)):(u.push(u[f-1]+l),h.push(h[f-1]+l*l)),t[0][f]=a(0,f,u,h),e[0][f]=0;for(var s=1;s<t.length;++s)o(s<t.length-1?s:n-1,n-1,s,t,e,u,h)}(u,h,f);for(var l=[],s=f[0].length-1,c=f.length-1;c>=0;c--){var v=f[c][s];l[c]=u.slice(v,s+1),c>0&&(s=v-1)}return l},r.coefficientOfVariation=function(r){return l(r)/u(r)},r.combinations=function r(t,e){var n,a,o,i,u=[];for(n=0;n<t.length;n++)if(1===e)u.push([t[n]]);else for(o=r(t.slice(n+1,t.length),e-1),a=0;a<o.length;a++)(i=o[a]).unshift(t[n]),u.push(i);return u},r.combinationsReplacement=function r(t,e){for(var n=[],a=0;a<t.length;a++)if(1===e)n.push([t[a]]);else for(var o=r(t.slice(a,t.length),e-1),i=0;i<o.length;i++)n.push([t[a]].concat(o[i]));return n},r.combineMeans=s,r.combineVariances=function(r,t,e,n,a,o){var i=s(t,e,a,o);return(e*(r+Math.pow(t-i,2))+o*(n+Math.pow(a-i,2)))/(e+o)},r.cumulativeStdLogisticProbability=function(r){return 1/(Math.exp(-r)+1)},r.cumulativeStdNormalProbability=function(r){var t=Math.abs(r),e=Math.min(Math.round(100*t),$.length-1);return r>=0?$[e]:Math.round(1e4*(1-$[e]))/1e4},r.epsilon=U,r.equalIntervalBreaks=function(r,t){if(r.length<2)return r;for(var e=v(r),n=c(r),a=[e],o=(n-e)/t,i=1;i<t;i++)a.push(a[0]+o*i);return a.push(n),a},r.erf=tr,r.errorFunction=tr,r.extent=function(r){if(0===r.length)throw new Error("extent requires at least one data point");for(var t=r[0],e=r[0],n=1;n<r.length;n++)r[n]>e&&(e=r[n]),r[n]<t&&(t=r[n]);return[t,e]},r.extentSorted=function(r){return[r[0],r[r.length-1]]},r.factorial=er,r.gamma=function r(t){if(Number.isInteger(t))return t<=0?Number.NaN:er(t-1);if(t>0&&t<20)return r(t+1)/t;if(--t<0)return Math.PI/(Math.sin(Math.PI*-t)*r(-t));var e=t+1/4;return Math.pow(t/Math.E,t)*Math.sqrt(2*Math.PI*(t+1/6))*(1+1/144/Math.pow(e,2)-1/12960/Math.pow(e,3)-257/207360/Math.pow(e,4)-52/2612736/Math.pow(e,5)+5741173/9405849600/Math.pow(e,6)+37529/18811699200/Math.pow(e,7))},r.gammaln=K,r.geometricMean=function(r){if(0===r.length)throw new Error("geometricMean requires at least one data point");for(var t=1,e=0;e<r.length;e++){if(r[e]<0)throw new Error("geometricMean requires only non-negative numbers as input");t*=r[e]}return Math.pow(t,1/r.length)},r.harmonicMean=function(r){if(0===r.length)throw new Error("harmonicMean requires at least one data point");for(var t=0,e=0;e<r.length;e++){if(r[e]<=0)throw new Error("harmonicMean requires only positive numbers as input");t+=1/r[e]}return r.length/t},r.interquartileRange=q,r.inverseErrorFunction=nr,r.iqr=q,r.jenks=function(r,t){if(t>r.length)return null;var e=function(r,t){var e,n,a=[],o=[],i=0;for(e=0;e<r.length+1;e++){var u=[],h=[];for(n=0;n<t+1;n++)u.push(0),h.push(0);a.push(u),o.push(h)}for(e=1;e<t+1;e++)for(a[1][e]=1,o[1][e]=0,n=2;n<r.length+1;n++)o[n][e]=Number.POSITIVE_INFINITY;for(var f=2;f<r.length+1;f++){for(var l=0,s=0,c=0,v=0,g=1;g<f+1;g++){var w=f-g+1,p=r[w-1];if(i=(s+=p*p)-(l+=p)*l/++c,0!=(v=w-1))for(n=2;n<t+1;n++)o[f][n]>=i+o[v][n-1]&&(a[f][n]=w,o[f][n]=i+o[v][n-1])}a[f][1]=1,o[f][1]=i}return{lowerClassLimits:a,varianceCombinations:o}}(r=r.slice().sort(function(r,t){return r-t}),t);return function(r,t,e){var n=r.length,a=[],o=e;for(a[e]=r[r.length-1];o>0;)a[o-1]=r[t[n][o]-1],n=t[n][o]-1,o--;return a}(r,e.lowerClassLimits,t)},r.kMeansCluster=function(r,t,e){void 0===e&&(e=Math.random);for(var n=null,a=T(r,t,e),o=null,i=Number.MAX_VALUE;0!==i;)n=a,i=ur(a=ir(r,o=or(r,a),t),n);return{labels:o,centroids:a}},r.kde=sr,r.kernelDensityEstimation=sr,r.linearRegression=function(r){var t,e,n=r.length;if(1===n)t=0,e=r[0][1];else{for(var a=0,o=0,i=0;i<n;i++)a+=r[i][0],o+=r[i][1];for(var u=a/n,h=o/n,f=0,l=0,s=0;s<n;s++){var c=r[s][0]-u;f+=c*(r[s][1]-h),l+=c*c}e=h-(t=f/l)*u}return{m:t,b:e}},r.linearRegressionLine=function(r){return function(t){return r.b+r.m*t}},r.logAverage=function(r){if(0===r.length)throw new Error("logAverage requires at least one data point");for(var t=0,e=0;e<r.length;e++){if(r[e]<0)throw new Error("logAverage requires only non-negative numbers as input");t+=Math.log(r[e])}return Math.exp(t/r.length)},r.logit=function(r){if(r<=0||r>=1)throw new Error("p must be strictly between zero and one");return Math.log(r/(1-r))},r.mad=N,r.max=c,r.maxSorted=function(r){return r[r.length-1]},r.mean=u,r.meanSimple=y,r.median=S,r.medianAbsoluteDeviation=N,r.medianSorted=function(r){return g(r,.5)},r.min=v,r.minSorted=function(r){return r[0]},r.mode=function(r){return x(e(r))},r.modeFast=function(r){for(var t,e=new Map,n=0,a=0;a<r.length;a++){var o=e.get(r[a]);void 0===o?o=1:o++,o>n&&(t=r[a],n=o),e.set(r[a],o)}if(0===n)throw new Error("mode requires at last one data point");return t},r.modeSorted=x,r.normalDistribution=function(r,t,e,n){if(void 0===n&&(n=!1),e<=0)throw new Error("normalDistribution requires a standard deviation greater than zero");var a=(r-t)/e;return n?.5*(1+tr(a/Math.SQRT2)):Math.exp(-.5*a*a)/(e*Math.sqrt(2*Math.PI))},r.numericSort=e,r.perceptron=cr,r.permutationTest=function(r,t,e,n,a){if(void 0===n&&(n=1e4),void 0===e&&(e="two_side"),"two_side"!==e&&"greater"!==e&&"less"!==e)throw new Error("`alternative` must be either 'two_side', 'greater', or 'less'.");for(var o=u(r)-u(t),i=new Array(n),h=r.concat(t),f=r.length,l=0;l<n;l++){A(h,a);var s=h.slice(0,f),c=h.slice(f,h.length),v=u(s)-u(c);i[l]=v}var g=0;if("two_side"===e)for(var w=0;w<=n;w++)Math.abs(i[w])>=Math.abs(o)&&(g+=1);else if("greater"===e)for(var p=0;p<=n;p++)i[p]>=o&&(g+=1);else for(var d=0;d<=n;d++)i[d]<=o&&(g+=1);return g/n},r.permutationsHeap=function(r){for(var t=new Array(r.length),e=[r.slice()],n=0;n<r.length;n++)t[n]=0;for(var a=0;a<r.length;)if(t[a]<a){var o=0;a%2!=0&&(o=t[a]);var i=r[o];r[o]=r[a],r[a]=i,e.push(r.slice()),t[a]++,a=0}else t[a]=0,a++;return e},r.poissonDistribution=function(r){if(!(r<=0||r>=Y)){var t=0,e=0,n=[],a=Math.log(r);do{n[t]=Math.exp(t*a-r-K(t+1)),e+=n[t],t++}while(e<.9999&&t<Y);if(!(Number.isNaN(e)||e<.9999))return n}},r.probit=function(r){return 0===r?r=U:r>=1&&(r=.9999),Math.sqrt(2)*nr(2*r-1)},r.product=function(r){for(var t=1,e=0;e<r.length;e++)t*=r[e];return t},r.quantile=d,r.quantileRank=function(r,t){return k(e(r),t)},r.quantileRankSorted=k,r.quantileSorted=g,r.quickselect=w,r.rSquared=function(r,t){if(r.length<2)return 1;for(var e=0,n=0;n<r.length;n++)e+=r[n][1];for(var a=e/r.length,o=0,i=0;i<r.length;i++)o+=Math.pow(a-r[i][1],2);for(var u=0,h=0;h<r.length;h++)u+=Math.pow(r[h][1]-t(r[h][0]),2);return 1-u/o},r.relativeError=Q,r.rms=I,r.rootMeanSquare=I,r.sample=T,r.sampleCorrelation=F,r.sampleCovariance=C,r.sampleKurtosis=function(r){var t=r.length;if(t<4)throw new Error("sampleKurtosis requires at least four data points");for(var e,n=u(r),a=0,o=0,i=0;i<t;i++)a+=(e=r[i]-n)*e,o+=e*e*e*e;return(t-1)/((t-2)*(t-3))*(t*(t+1)*o/(a*a)-3*(t-1))},r.sampleRankCorrelation=function(r,t){return F(R(r),R(t))},r.sampleSkewness=function(r,t){if(void 0===t&&(t=!1),r.length<3)throw new Error("sampleSkewness requires at least three data points");for(var e,n=u(r),a=0,o=0,i=0;i<r.length;i++)a+=(e=r[i]-n)*e,o+=e*e*e;var h=r.length;if(t){var f=a/h;return o/h/Math.pow(f,1.5)}var l=r.length-1,s=Math.sqrt(a/l);return h*o/((h-1)*(h-2)*Math.pow(s,3))},r.sampleStandardDeviation=l,r.sampleVariance=f,r.sampleWithReplacement=function(r,t,e){if(0===r.length)return[];e=e||Math.random;for(var n=r.length,a=[],o=0;o<t;o++){var i=Math.floor(e()*n);a.push(r[i])}return a},r.scaledRootMeanSquare=function(r){if(0===r.length)throw new Error("scaledRootMeanSquare requires at least one data point");for(var t=0,e=0;e<r.length;e++){var n=Math.abs(r[e]);n>t&&(t=n)}if(0===t)return 0;if(!Number.isFinite(t))return t;for(var a=0,o=0;o<r.length;o++){var i=r[o]/t;a+=i*i}return t*Math.sqrt(a/r.length)},r.shuffle=P,r.shuffleInPlace=A,r.sign=H,r.silhouette=vr,r.silhouetteMetric=function(r,t){return c(vr(r,t))},r.standardDeviation=V,r.standardNormalTable=$,r.subtractFromMean=function(r,t,e){return(r*t-e)/(t-1)},r.sum=i,r.sumNthPowerDeviations=h,r.sumSimple=E,r.tTest=function(r,t){return(u(r)-t)/(V(r)/Math.sqrt(r.length))},r.tTestTwoSample=function(r,t,e){var n=r.length,a=t.length;if(!n||!a)return null;e||(e=0);var o=u(r),i=u(t),h=f(r),l=f(t);if("number"==typeof o&&"number"==typeof i&&"number"==typeof h&&"number"==typeof l){var s=((n-1)*h+(a-1)*l)/(n+a-2);return(o-i-e)/Math.sqrt(s*(1/n+1/a))}},r.uniqueCountSorted=n,r.variance=D,r.weightedLinearRegression=function(r,t){var e=_(r,t,"weightedLinearRegression");if(1===r.length)return{m:0,b:r[0][1]};for(var n=0,a=0,o=0;o<r.length;o++)n+=t[o]*r[o][0],a+=t[o]*r[o][1];for(var i=n/e,u=a/e,h=0,f=0,l=0;l<r.length;l++){var s=r[l][0]-i;h+=t[l]*s*(r[l][1]-u),f+=t[l]*s*s}var c=h/f;return{m:c,b:u-c*i}},r.weightedMean=L,r.weightedQuantile=function(r,t,e){for(var n=_(r,t,"weightedQuantile"),a=[],o=0;o<r.length;o++)a.push([r[o],t[o]]);if(a.sort(G),Array.isArray(e)){for(var i=[],u=0;u<e.length;u++)i[u]=O(a,n,e[u]);return i}return O(a,n,e)},r.weightedStandardDeviation=function(r,t){return Math.sqrt(z(r,t))},r.weightedVariance=z,r.wilcoxonRankSum=function(r,t){if(!r.length||!t.length)throw new Error("Neither sample can be empty");for(var e=r.map(function(r){return{label:"x",value:r}}).concat(t.map(function(r){return{label:"y",value:r}})).sort(function(r,t){return r.value-t.value}),n=0;n<e.length;n++)e[n].rank=n;for(var a=[e[0].rank],o=1;o<e.length;o++)e[o].value===e[o-1].value?(a.push(e[o].rank),o===e.length-1&&i(e,a)):(a.length>1&&i(e,a),a=[e[o].rank]);function i(r,t){for(var e=(t[0]+t[t.length-1])/2,n=0;n<t.length;n++)r[t[n]].rank=e}for(var u=0,h=0;h<e.length;h++){var f=e[h];"x"===f.label&&(u+=f.rank+1)}return u},r.zScore=function(r,t,e){return(r-t)/e}});
+</script>
+<style>
+  :root {
+    --bg: #EDECE2;
+    --surface: #FFFFFF;
+    --surface-soft: #F6F5EE;
+    --ink: #1E2A2E;
+    --ink-soft: #56645F;
+    --ink-faint: #8B968F;
+    --accent: #2F6B5E;
+    --accent-soft: #E4EEE9;
+    --accent-warm: #A85E22;
+    --accent-warm-soft: #F3E6D6;
+    --border: #DAD6C7;
+    --border-strong: #C7C2AF;
+    --danger: #A8402F;
+    --danger-soft: #F5E3DE;
+    --radius: 3px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14181A; --surface: #1C2123; --surface-soft: #20262A;
+      --ink: #E7E4D9; --ink-soft: #A6ACA3; --ink-faint: #6E7671;
+      --accent: #63A793; --accent-soft: #223229;
+      --accent-warm: #D89A5C; --accent-warm-soft: #332821;
+      --border: #2C3336; --border-strong: #3A4245;
+      --danger: #D3806E; --danger-soft: #33231F;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14181A; --surface: #1C2123; --surface-soft: #20262A;
+    --ink: #E7E4D9; --ink-soft: #A6ACA3; --ink-faint: #6E7671;
+    --accent: #63A793; --accent-soft: #223229;
+    --accent-warm: #D89A5C; --accent-warm-soft: #332821;
+    --border: #2C3336; --border-strong: #3A4245;
+    --danger: #D3806E; --danger-soft: #33231F;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: 'Vazirmatn', Tahoma, 'Segoe UI', sans-serif;
+    line-height: 1.7; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 48px 20px 96px; }
+
+  .hero { margin-bottom: 40px; }
+  .hero h1 { font-size: clamp(28px, 5vw, 42px); font-weight: 800; letter-spacing: -0.01em; margin: 0 0 14px; line-height: 1.25; }
+  .hero p { max-width: 62ch; color: var(--ink-soft); font-size: 17px; margin: 0; }
+  .hero .rule { width: 64px; height: 3px; background: var(--accent); margin: 22px 0 0; border: none; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; }
+  @media (max-width: 560px) { .card { padding: 22px; } }
+
+  .field-group { margin-bottom: 30px; }
+  .field-group:last-child { margin-bottom: 0; }
+  .field-label { display: block; font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+  .field-hint { color: var(--ink-faint); font-size: 13.5px; margin: 0 0 12px; }
+
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill {
+    border: 1px solid var(--border-strong); background: var(--surface); color: var(--ink);
+    padding: 9px 16px; border-radius: 20px; font-family: inherit; font-size: 14.5px;
+    cursor: pointer; transition: border-color .15s ease, background .15s ease, color .15s ease;
+  }
+  .pill:hover { border-color: var(--accent); }
+  .pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  input[type="number"], select {
+    width: 100%; font-family: inherit; font-size: 15px; padding: 10px 12px;
+    border: 1px solid var(--border-strong); border-radius: var(--radius);
+    background: var(--surface); color: var(--ink);
+  }
+  input[type="number"]:focus, select:focus, .pill:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 520px) { .row2 { grid-template-columns: 1fr; } }
+  .hidden { display: none !important; }
+
+  button.primary {
+    font-family: inherit; background: var(--accent); color: #fff; border: none;
+    padding: 14px 26px; font-size: 15.5px; font-weight: 600; border-radius: var(--radius); cursor: pointer; margin-top: 8px;
+  }
+  button.primary:hover { filter: brightness(1.08); }
+  button.ghost {
+    font-family: inherit; background: transparent; color: var(--ink-soft);
+    border: 1px solid var(--border-strong); padding: 10px 18px; font-size: 14px; border-radius: var(--radius); cursor: pointer;
+  }
+  button.ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Upload */
+  .upload-box { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .upload-filename { font-size: 13.5px; color: var(--ink-soft); }
+  .csv-summary { margin-top: 18px; border: 1px solid var(--border); background: var(--surface-soft); border-radius: var(--radius); padding: 18px 20px; }
+  .csv-meta { font-size: 14px; margin-bottom: 12px; }
+  .col-list { display: flex; flex-direction: column; gap: 0; margin-bottom: 18px; max-height: 220px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+  .col-row { display: flex; align-items: center; gap: 10px; padding: 8px 12px; font-size: 13.5px; border-bottom: 1px solid var(--border); }
+  .col-row:last-child { border-bottom: none; }
+  .col-name { font-weight: 600; flex: 1; }
+  .col-badge { font-size: 11.5px; padding: 2px 8px; border-radius: 10px; }
+  .col-badge.num { background: var(--accent-soft); color: var(--accent); }
+  .col-badge.cat { background: var(--accent-warm-soft); color: var(--accent-warm); }
+  .col-unique { color: var(--ink-faint); font-size: 12px; }
+  .csv-selects .field-group { margin-bottom: 14px; }
+  .csv-note { font-size: 13px; color: var(--ink-faint); margin: 10px 0 0; }
+
+  .stats-preview { margin-top: 20px; border-top: 1px solid var(--border); padding-top: 18px; }
+  .stats-preview h4 { margin: 0 0 12px; font-size: 14.5px; font-weight: 700; color: var(--ink); }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px 16px; margin-bottom: 14px; }
+  .stats-item .k { font-size: 11.5px; color: var(--ink-faint); margin-bottom: 2px; }
+  .stats-item .v { font-size: 14px; font-weight: 700; font-family: 'Courier New', monospace; }
+  .mini-chart { width: 100%; height: auto; display: block; margin-top: 6px; }
+  .chart-caption { font-size: 12px; color: var(--ink-faint); margin-top: 4px; }
+  .stats-flag { margin-top: 12px; padding: 10px 14px; border-radius: var(--radius); font-size: 13.5px; background: var(--surface); border: 1px solid var(--border-strong); }
+  .stats-flag.warn { border-color: var(--danger); background: var(--danger-soft); color: var(--danger); }
+  .stats-flag.ok { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+  .stats-flag .alt { display: block; color: var(--ink-soft); font-size: 12.5px; margin-top: 4px; font-weight: 400; }
+  .group-table { margin-top: 14px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .group-table-title { padding: 10px 14px; background: var(--surface-soft); font-size: 12.5px; font-weight: 700; color: var(--ink-soft); }
+  .group-row { display: flex; flex-wrap: wrap; gap: 12px; padding: 9px 14px; font-size: 13px; border-top: 1px solid var(--border); }
+  .g-name { font-weight: 700; flex: 1; min-width: 80px; }
+
+  /* Results */
+  .plan-summary { border: 1px solid var(--border); background: var(--surface); border-radius: var(--radius); padding: 26px 30px; margin-bottom: 28px; }
+  .plan-summary h2 { margin: 0 0 4px; font-size: 21px; font-weight: 700; }
+  .plan-summary .sub { color: var(--ink-soft); font-size: 14.5px; margin-bottom: 18px; }
+  .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px 20px; border-top: 1px solid var(--border); padding-top: 16px; }
+  .meta-item .k { font-size: 12.5px; color: var(--ink-faint); margin-bottom: 3px; }
+  .meta-item .v { font-size: 15px; font-weight: 600; }
+
+  .timeline { position: relative; }
+  .step { position: relative; padding-inline-start: 52px; padding-bottom: 26px; }
+  .step:last-child { padding-bottom: 0; }
+  .step::before { content: ""; position: absolute; inset-inline-start: 17px; top: 34px; bottom: -8px; width: 1px; background: var(--border-strong); }
+  .step:last-child::before { display: none; }
+  .step-num {
+    position: absolute; inset-inline-start: 0; top: 2px; width: 36px; height: 36px; border-radius: 50%;
+    background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14.5px; border: 1px solid var(--border);
+  }
+  .step-body { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+  .step-body summary {
+    cursor: pointer; list-style: none; padding: 16px 20px; font-weight: 600; font-size: 16px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  }
+  .step-body summary::-webkit-details-marker { display: none; }
+  .step-body summary .chev { color: var(--ink-faint); font-size: 13px; transition: transform .15s ease; flex-shrink: 0; }
+  .step-body[open] summary .chev { transform: rotate(180deg); }
+  .step-detail { padding: 0 20px 20px; border-top: 1px solid var(--border); }
+  .kv { padding: 14px 0; border-bottom: 1px dashed var(--border); }
+  .kv:last-child { border-bottom: none; }
+  .kv .k { font-size: 12.5px; color: var(--accent); font-weight: 700; margin-bottom: 4px; }
+  .kv .v { font-size: 14.5px; color: var(--ink); }
+  .software-tag { display: inline-block; font-family: 'Courier New', monospace; font-size: 12.5px; background: var(--surface-soft); border: 1px solid var(--border); padding: 2px 8px; border-radius: 3px; margin-inline-end: 6px; }
+
+  .warning-box { margin-top: 30px; border: 1px solid var(--danger); background: var(--danger-soft); border-radius: var(--radius); padding: 20px 24px; }
+  .warning-box h3 { margin: 0 0 12px; font-size: 15.5px; color: var(--danger); }
+  .warning-item { font-size: 14.5px; margin-bottom: 10px; padding-inline-start: 22px; position: relative; }
+  .warning-item:last-child { margin-bottom: 0; }
+  .warning-item::before { content: "!"; position: absolute; right: 0; top: 0; font-weight: 800; color: var(--danger); }
+  .warning-item .alt { display: block; color: var(--ink-soft); font-size: 13.5px; margin-top: 2px; }
+
+  .actions-row { display: flex; gap: 10px; margin-top: 32px; flex-wrap: wrap; }
+  .footnote { margin-top: 36px; font-size: 12.5px; color: var(--ink-faint); line-height: 1.8; }
+</style>
+
+<style id="multilingual-style">
+#languageSwitcher{position:fixed;top:14px;right:18px;z-index:99999;display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:12px;background:rgba(255,255,255,.96);box-shadow:0 4px 18px rgba(0,0,0,.12);font-family:inherit;direction:ltr}#languageSwitcher label{font-size:12px;font-weight:700;color:#444}#languageSwitcher select{border:1px solid #ccc;border-radius:8px;padding:5px 8px;background:#fff;font:inherit;cursor:pointer}html[dir="rtl"] #languageSwitcher{right:auto;left:18px;direction:ltr}@media(max-width:600px){#languageSwitcher{top:8px;right:8px;font-size:12px;padding:5px 7px}}.goog-te-banner-frame.skiptranslate{display:none!important}body{top:0!important}.goog-tooltip,.goog-tooltip:hover{display:none!important}.goog-text-highlight{background-color:transparent!important;box-shadow:none!important}.goog-te-gadget{font-size:0!important}#google_translate_element{display:none!important}
+</style>
+</head>
+<body>
+<div id="languageSwitcher" aria-label="Language selector"><label for="languageSelect">Language</label><select id="languageSelect"><option value="fa">🇮🇷 فارسی</option><option value="en">🇬🇧 English</option><option value="fr">🇫🇷 Français</option></select></div>
+<div id="google_translate_element" aria-hidden="true"></div>
+
+<div class="wrap">
+
+  <div class="hero">
+    <h1>نقشه تحلیل داده‌ی شما</h1>
+    <p>داده یا مشخصات پژوهش‌تان را وارد کنید تا مسیر کامل تحلیل — از پاکسازی داده تا گزارش نتایج در مقاله — به‌صورت گام‌به‌گام برای‌تان ساخته شود.</p>
+    <hr class="rule">
+  </div>
+
+  <!-- ============ FORM SCREEN ============ -->
+  <section id="formScreen" class="card">
+
+    <div class="field-group">
+      <label class="field-label">آپلود داده (اختیاری)</label>
+      <p class="field-hint">اگر فایل CSV داده خام دارید، آپلود کنید تا حجم نمونه، تعداد متغیرها و ساختار گروه‌ها به‌صورت خودکار تشخیص داده شود. کاملاً اختیاری است؛ بدون آن هم می‌توانید ادامه دهید.</p>
+      <div class="upload-box">
+        <input type="file" id="csvInput" accept=".csv" style="display:none">
+        <button type="button" class="ghost" id="uploadTrigger">انتخاب فایل CSV</button>
+        <span id="uploadFileName" class="upload-filename"></span>
+      </div>
+      <div id="csvSummaryPanel" class="csv-summary hidden"></div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">رشته پژوهش شما کدام است؟</label>
+      <p class="field-hint">این گزینه نوع مسیر تحلیل را تعیین می‌کند</p>
+      <div class="pills" id="disciplinePills">
+        <button type="button" class="pill" data-value="management">مدیریت / علوم اجتماعی</button>
+        <button type="button" class="pill" data-value="humanities">علوم انسانی</button>
+        <button type="button" class="pill" data-value="psychology_education">روان‌شناسی و علوم تربیتی</button>
+        <button type="button" class="pill" data-value="agriculture">کشاورزی / علوم زیستی</button>
+        <button type="button" class="pill" data-value="medicine">پزشکی / سلامت</button>
+        <button type="button" class="pill" data-value="engineering">مهندسی / علوم پایه</button>
+        <button type="button" class="pill" data-value="economics">اقتصاد</button>
+        <button type="button" class="pill" data-value="generic">سایر / مطمئن نیستم</button>
+      </div>
+    </div>
+
+    <div id="dynamicFields"></div>
+
+    <div class="field-group hidden" id="generateWrap">
+      <button type="button" class="primary" id="generateBtn">ساخت نقشه تحلیل</button>
+    </div>
+
+  </section>
+
+  <!-- ============ RESULT SCREEN ============ -->
+  <section id="resultScreen" class="hidden">
+    <div class="plan-summary">
+      <h2>نقشه تحلیل داده شما</h2>
+      <div class="sub" id="planSubtitle"></div>
+      <div class="meta-grid" id="planMeta"></div>
+    </div>
+    <div class="timeline" id="timeline"></div>
+    <div class="warning-box hidden" id="warningBox">
+      <h3>چه آزمونی انجام ندهید</h3>
+      <div id="warningList"></div>
+    </div>
+    <div class="actions-row">
+      <button type="button" class="ghost" id="editBtn">بازگشت و ویرایش مشخصات</button>
+      <button type="button" class="ghost" id="copyBtn">کپی خلاصه نقشه</button>
+    </div>
+    <p class="footnote">این نقشه بر پایه‌ی قواعد کلی روش‌شناسی پژوهش تولید شده و جایگزین مشورت با استاد راهنما یا مشاور آماری نیست. پیش از اجرای هر آزمون، مفروضات آن را حتماً با داده‌های واقعی خود بررسی کنید. اگر فایل CSV آپلود کرده‌اید، این پردازش تماماً در مرورگر شما انجام شده و هیچ داده‌ای به سرور ارسال نمی‌شود.</p>
+  </section>
+
+</div>
+
+<script>
+(function(){
+
+  // ---------------------------------------------------------------
+  // Discipline field templates
+  // ---------------------------------------------------------------
+  const dynamicFieldsEl = document.getElementById('dynamicFields');
+  const generateWrap = document.getElementById('generateWrap');
+  let discipline = null;
+
+  const disciplineFieldsHTML = {
+    management: `
+      <div class="field-group">
+        <label class="field-label">هدف اصلی تحلیل چیست؟</label>
+        <div class="pills" data-group="goal">
+          <button type="button" class="pill" data-value="sem">بررسی روابط بین چند سازه (پرسشنامه)</button>
+          <button type="button" class="pill" data-value="compare">مقایسه گروه‌ها</button>
+          <button type="button" class="pill" data-value="corr">همبستگی / رگرسیون ساده</button>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">تعداد پرسشنامه‌های جمع‌آوری‌شده (حجم نمونه)</label>
+        <input type="number" min="1" id="f_sampleSize" placeholder="مثلاً ۲۵۰">
+      </div>
+      <div class="field-group">
+        <label class="field-label">تعداد سازه‌ها یا متغیرهای اصلی مدل</label>
+        <p class="field-hint">مثلاً رهبری، رضایت شغلی، عملکرد = ۳ سازه</p>
+        <input type="number" min="1" id="f_numConstructs" placeholder="مثلاً ۳">
+      </div>
+      <div class="field-group">
+        <label class="field-label">آیا از پرسشنامه استاندارد چندگویه‌ای استفاده کرده‌اید؟</label>
+        <div class="pills" data-group="hasQuestionnaire">
+          <button type="button" class="pill" data-value="yes">بله</button>
+          <button type="button" class="pill" data-value="no">خیر، داده‌ها عددی/میدانی هستند</button>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">آیا فرضیه میانجی‌گری یا تعدیل‌گری دارید؟</label>
+        <div class="pills" data-group="hasMediation">
+          <button type="button" class="pill" data-value="yes">بله</button>
+          <button type="button" class="pill" data-value="no">خیر</button>
+        </div>
+      </div>
+    `,
+    humanities: `
+      <div class="field-group">
+        <label class="field-label">هدف اصلی تحلیل چیست؟</label>
+        <div class="pills" data-group="goal">
+          <button type="button" class="pill" data-value="sem">بررسی روابط بین چند سازه (پرسشنامه)</button>
+          <button type="button" class="pill" data-value="compare">مقایسه گروه‌ها (مثلاً جنسیت، سن، مقطع)</button>
+          <button type="button" class="pill" data-value="corr">همبستگی / رگرسیون ساده</button>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">حجم نمونه</label>
+        <input type="number" min="1" id="f_sampleSize" placeholder="مثلاً ۱۸۰">
+      </div>
+      <div class="field-group">
+        <label class="field-label">تعداد سازه‌ها یا متغیرهای اصلی</label>
+        <input type="number" min="1" id="f_numConstructs" placeholder="مثلاً ۲">
+      </div>
+      <div class="field-group">
+        <label class="field-label">آیا از پرسشنامه استاندارد استفاده کرده‌اید؟</label>
+        <div class="pills" data-group="hasQuestionnaire">
+          <button type="button" class="pill" data-value="yes">بله</button>
+          <button type="button" class="pill" data-value="no">خیر</button>
+        </div>
+      </div>
+      <div class="field-group hidden" id="groupCompareFields">
+        <label class="field-label">تعداد گروه‌های مقایسه‌ای</label>
+        <input type="number" min="2" id="f_numGroups" placeholder="مثلاً ۲">
+      </div>
+    `,
+    psychology_education: `
+      <div class="field-group">
+        <label class="field-label">هدف اصلی تحلیل چیست؟</label>
+        <div class="pills" data-group="goal">
+          <button type="button" class="pill" data-value="experimental">طرح آزمایشی (گروه آزمایش و کنترل)</button>
+          <button type="button" class="pill" data-value="survey">پیمایشی با پرسشنامه (سازه‌ها)</button>
+          <button type="button" class="pill" data-value="compare">مقایسه گروه‌ها بر اساس ویژگی جمعیت‌شناختی</button>
+        </div>
+      </div>
+      <div class="field-group" id="psy_sampleSizeWrap">
+        <label class="field-label">حجم نمونه</label>
+        <input type="number" min="1" id="f_sampleSize" placeholder="مثلاً ۶۰">
+      </div>
+      <div class="field-group hidden" id="psy_experimentalFields">
+        <label class="field-label">آیا پیش‌آزمون (Pretest) هم گرفته‌اید؟</label>
+        <div class="pills" data-group="hasPretest">
+          <button type="button" class="pill" data-value="yes">بله</button>
+          <button type="button" class="pill" data-value="no">خیر، فقط پس‌آزمون</button>
+        </div>
+        <div class="field-group" style="margin-top:16px">
+          <label class="field-label">تعداد گروه (شامل کنترل)</label>
+          <input type="number" min="2" id="f_numGroups" placeholder="مثلاً ۲">
+        </div>
+      </div>
+      <div class="field-group hidden" id="psy_surveyFields">
+        <label class="field-label">تعداد سازه‌ها یا متغیرهای اصلی</label>
+        <input type="number" min="1" id="f_numConstructs" placeholder="مثلاً ۳">
+        <div class="field-group" style="margin-top:16px">
+          <label class="field-label">آیا از پرسشنامه استاندارد استفاده کرده‌اید؟</label>
+          <div class="pills" data-group="hasQuestionnaire">
+            <button type="button" class="pill" data-value="yes">بله</button>
+            <button type="button" class="pill" data-value="no">خیر</button>
+          </div>
+        </div>
+        <div class="field-group" style="margin-top:16px">
+          <label class="field-label">آیا فرضیه میانجی‌گری یا تعدیل‌گری دارید؟</label>
+          <div class="pills" data-group="hasMediation">
+            <button type="button" class="pill" data-value="yes">بله</button>
+            <button type="button" class="pill" data-value="no">خیر</button>
+          </div>
+        </div>
+      </div>
+      <div class="field-group hidden" id="psy_compareFields">
+        <label class="field-label">تعداد گروه‌های مقایسه‌ای</label>
+        <input type="number" min="2" id="f_numGroups2" placeholder="مثلاً ۳">
+      </div>
+    `,
+    agriculture: `
+      <div class="field-group">
+        <label class="field-label">هدف اصلی تحلیل چیست؟</label>
+        <div class="pills" data-group="goal">
+          <button type="button" class="pill" data-value="design">مقایسه تیمارها (طرح آزمایشی)</button>
+          <button type="button" class="pill" data-value="correlation">همبستگی بین صفات</button>
+          <button type="button" class="pill" data-value="descriptive">توصیفی</button>
+        </div>
+      </div>
+      <div class="field-group" id="agri_designFields">
+        <label class="field-label">تعداد عامل‌های آزمایشی (فاکتورها)</label>
+        <p class="field-hint">مثلاً «رقم × سطح کود» یعنی ۲ فاکتور</p>
+        <div class="pills" data-group="numFactors">
+          <button type="button" class="pill" data-value="1">۱ فاکتور</button>
+          <button type="button" class="pill" data-value="2">۲ فاکتور</button>
+          <button type="button" class="pill" data-value="3">۳ فاکتور یا بیشتر</button>
+        </div>
+        <div class="row2" style="margin-top:16px">
+          <div>
+            <label class="field-label">تعداد تیمار / سطح در هر فاکتور</label>
+            <input type="number" min="2" id="f_numTreatments" placeholder="مثلاً ۴">
+          </div>
+          <div>
+            <label class="field-label">تعداد تکرار</label>
+            <input type="number" min="1" id="f_numReplications" placeholder="مثلاً ۳">
+          </div>
+        </div>
+        <div class="field-group" style="margin-top:16px">
+          <label class="field-label">طرح آزمایشی</label>
+          <select id="f_designType">
+            <option value="crd">کاملاً تصادفی (CRD)</option>
+            <option value="rcbd">بلوک‌های کامل تصادفی (RCBD)</option>
+            <option value="splitplot">کرت‌های خردشده (Split-Plot)</option>
+            <option value="unsure">مطمئن نیستم</option>
+          </select>
+        </div>
+        <div class="field-group" style="margin-top:16px">
+          <label class="field-label">آیا اندازه‌گیری در چند نوبت زمانی تکرار شده؟</label>
+          <div class="pills" data-group="measuredOverTime">
+            <button type="button" class="pill" data-value="yes">بله</button>
+            <button type="button" class="pill" data-value="no">خیر، یک‌بار برداشت</button>
+          </div>
+        </div>
+      </div>
+      <div class="field-group hidden" id="agri_traitFields">
+        <label class="field-label">تعداد صفت موردبررسی برای همبستگی</label>
+        <input type="number" min="2" id="f_numTraits" placeholder="مثلاً ۵">
+      </div>
+      <div class="field-group" id="agri_sampleSizeWrap">
+        <label class="field-label">تعداد مشاهدات / نمونه‌ها</label>
+        <input type="number" min="1" id="f_sampleSize" placeholder="مثلاً ۶۰">
+      </div>
+    `,
+    medicine: `
+      <div class="field-group">
+        <label class="field-label">هدف اصلی تحلیل چیست؟</label>
+        <div class="pills" data-group="goal">
+          <button type="button" class="pill" data-value="compare">مقایسه گروه‌های درمانی</button>
+          <button type="button" class="pill" data-value="regression">رابطه بین متغیرها (رگرسیون)</button>
+          <button type="button" class="pill" data-value="diagnostic">دقت تشخیصی (حساسیت/ویژگی)</button>
+          <button type="button" class="pill" data-value="survival">تحلیل بقا (Time-to-event)</button>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">تعداد بیماران / نمونه‌ها</label>
+        <input type="number" min="1" id="f_sampleSize" placeholder="مثلاً ۱۸۰">
+      </div>
+      <div class="field-group" id="med_compareFields">
+        <label class="field-label">تعداد گروه‌های مقایسه‌ای</label>
+        <div class="pills" data-group="numGroups">
+          <button type="button" class="pill" data-value="1">فقط یک گروه (قبل/بعد)</button>
+          <button type="button" class="pill" data-value="2">دو گروه</button>
+          <button type="button" class="pill" data-value="3">سه گروه یا بیشتر</button>
+        </div>
+        <div class="field-group hidden" id="independentWrap" style="margin-top:16px">
+          <label class="field-label">گروه‌ها مستقل‌اند یا وابسته (زوجی)؟</label>
+          <div class="pills" data-group="independent">
+            <button type="button" class="pill" data-value="yes">مستقل (افراد متفاوت)</button>
+            <button type="button" class="pill" data-value="no">وابسته (همان افراد، دو زمان)</button>
+          </div>
+        </div>
+        <div class="field-group" style="margin-top:16px">
+          <label class="field-label">آیا اندازه‌گیری در چند نقطه زمانی انجام شده؟</label>
+          <div class="pills" data-group="repeated">
+            <button type="button" class="pill" data-value="yes">بله</button>
+            <button type="button" class="pill" data-value="no">خیر، یک‌بار اندازه‌گیری</button>
+          </div>
+        </div>
+        <div class="field-group" style="margin-top:16px">
+          <label class="field-label">آیا متغیر مخدوشگر (covariate) دارید که باید کنترل شود؟</label>
+          <div class="pills" data-group="hasCovariate">
+            <button type="button" class="pill" data-value="yes">بله</button>
+            <button type="button" class="pill" data-value="no">خیر</button>
+          </div>
+        </div>
+      </div>
+      <div class="field-group hidden" id="med_regressionFields">
+        <label class="field-label">تعداد متغیر مستقل (پیش‌بین)</label>
+        <input type="number" min="1" id="f_numPredictors" placeholder="مثلاً ۳">
+      </div>
+      <div class="field-group hidden" id="med_diagnosticFields">
+        <p class="field-hint">برای مطالعات دقت تشخیصی، معیار طلایی (Gold Standard) باید در دسترس باشد.</p>
+      </div>
+      <div class="field-group hidden" id="med_survivalFields">
+        <label class="field-label">تعداد گروه‌هایی که بقای‌شان مقایسه می‌شود</label>
+        <div class="pills" data-group="survGroups">
+          <button type="button" class="pill" data-value="1">فقط یک گروه (بقای کلی)</button>
+          <button type="button" class="pill" data-value="2">دو گروه</button>
+          <button type="button" class="pill" data-value="3">سه گروه یا بیشتر</button>
+        </div>
+      </div>
+    `,
+    engineering: `
+      <div class="field-group">
+        <label class="field-label">هدف اصلی تحلیل چیست؟</label>
+        <div class="pills" data-group="goal">
+          <button type="button" class="pill" data-value="doe">مقایسه چند تیمار/شرایط آزمایشی (DOE)</button>
+          <button type="button" class="pill" data-value="regression">رابطه بین متغیرها (رگرسیون)</button>
+          <button type="button" class="pill" data-value="qc">کنترل کیفیت / پایش فرآیند</button>
+        </div>
+      </div>
+      <div class="field-group hidden" id="eng_doeFields">
+        <label class="field-label">تعداد عامل‌های آزمایشی</label>
+        <div class="pills" data-group="numFactors">
+          <button type="button" class="pill" data-value="1">۱ فاکتور</button>
+          <button type="button" class="pill" data-value="2">۲ فاکتور</button>
+          <button type="button" class="pill" data-value="3">۳ فاکتور یا بیشتر</button>
+        </div>
+        <div class="row2" style="margin-top:16px">
+          <div>
+            <label class="field-label">تعداد سطح/تیمار در هر فاکتور</label>
+            <input type="number" min="2" id="f_numTreatments" placeholder="مثلاً ۳">
+          </div>
+          <div>
+            <label class="field-label">تعداد تکرار</label>
+            <input type="number" min="1" id="f_numReplications" placeholder="مثلاً ۳">
+          </div>
+        </div>
+      </div>
+      <div class="field-group hidden" id="eng_regressionFields">
+        <label class="field-label">تعداد متغیر مستقل (پیش‌بین)</label>
+        <input type="number" min="1" id="f_numPredictors" placeholder="مثلاً ۳">
+        <div class="field-group" style="margin-top:16px">
+          <label class="field-label">حجم نمونه</label>
+          <input type="number" min="1" id="f_sampleSize" placeholder="مثلاً ۵۰">
+        </div>
+      </div>
+      <div class="field-group hidden" id="eng_qcFields">
+        <label class="field-label">تعداد زیرگروه‌های نمونه‌برداری (Subgroups)</label>
+        <input type="number" min="1" id="f_numSubgroups" placeholder="مثلاً ۲۵">
+        <div class="field-group" style="margin-top:16px">
+          <label class="field-label">اندازه هر زیرگروه</label>
+          <input type="number" min="1" id="f_subgroupSize" placeholder="مثلاً ۵">
+        </div>
+      </div>
+    `,
+    economics: `
+      <div class="field-group">
+        <label class="field-label">نوع داده و هدف تحلیل چیست؟</label>
+        <div class="pills" data-group="goal">
+          <button type="button" class="pill" data-value="crosssection">داده مقطعی (رگرسیون)</button>
+          <button type="button" class="pill" data-value="timeseries">سری زمانی (Time Series)</button>
+          <button type="button" class="pill" data-value="panel">داده تابلویی (Panel Data)</button>
+        </div>
+      </div>
+      <div class="field-group hidden" id="econ_crossFields">
+        <label class="field-label">تعداد متغیر مستقل</label>
+        <input type="number" min="1" id="f_numPredictors" placeholder="مثلاً ۴">
+        <div class="field-group" style="margin-top:16px">
+          <label class="field-label">حجم نمونه</label>
+          <input type="number" min="1" id="f_sampleSize" placeholder="مثلاً ۱۲۰">
+        </div>
+      </div>
+      <div class="field-group hidden" id="econ_tsFields">
+        <label class="field-label">تعداد دوره‌های زمانی (مشاهدات)</label>
+        <input type="number" min="10" id="f_numObservations" placeholder="مثلاً ۸۰">
+      </div>
+      <div class="field-group hidden" id="econ_panelFields">
+        <div class="row2">
+          <div>
+            <label class="field-label">تعداد واحدها (کشور/شرکت/استان)</label>
+            <input type="number" min="2" id="f_numEntities" placeholder="مثلاً ۲۰">
+          </div>
+          <div>
+            <label class="field-label">تعداد دوره زمانی برای هر واحد</label>
+            <input type="number" min="2" id="f_numPeriods" placeholder="مثلاً ۱۰">
+          </div>
+        </div>
+      </div>
+    `,
+    generic: `
+      <div class="field-group">
+        <label class="field-label">چند گروه را با هم مقایسه می‌کنید؟</label>
+        <div class="pills" data-group="numGroups">
+          <button type="button" class="pill" data-value="0">مقایسه گروهی ندارم (فقط توصیفی/همبستگی)</button>
+          <button type="button" class="pill" data-value="2">۲ گروه</button>
+          <button type="button" class="pill" data-value="3">۳ گروه یا بیشتر</button>
+        </div>
+      </div>
+      <div class="field-group hidden" id="genericIndependentWrap">
+        <label class="field-label">گروه‌ها مستقل‌اند یا وابسته؟</label>
+        <div class="pills" data-group="independent">
+          <button type="button" class="pill" data-value="yes">مستقل</button>
+          <button type="button" class="pill" data-value="no">وابسته (اندازه‌گیری تکراری)</button>
+        </div>
+      </div>
+      <div class="field-group hidden" id="genericPredictorsWrap">
+        <label class="field-label">چند متغیر مستقل / پیش‌بین دارید؟</label>
+        <input type="number" min="1" id="f_numPredictors" placeholder="مثلاً ۱">
+      </div>
+      <div class="field-group">
+        <label class="field-label">نوع متغیر وابسته اصلی</label>
+        <div class="pills" data-group="variableType">
+          <button type="button" class="pill" data-value="quant">کمّی (عددی پیوسته)</button>
+          <button type="button" class="pill" data-value="ordinal">رتبه‌ای / لیکرت</button>
+          <button type="button" class="pill" data-value="categorical">دسته‌ای / اسمی</button>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">حجم نمونه</label>
+        <input type="number" min="1" id="f_sampleSize" placeholder="مثلاً ۱۰۰">
+      </div>
+    `
+  };
+
+  const disciplinePills = document.querySelectorAll('#disciplinePills .pill');
+  disciplinePills.forEach(p => {
+    p.addEventListener('click', () => {
+      disciplinePills.forEach(x => x.classList.remove('active'));
+      p.classList.add('active');
+      discipline = p.dataset.value;
+      dynamicFieldsEl.innerHTML = disciplineFieldsHTML[discipline];
+      wirePillGroups(dynamicFieldsEl);
+      wireConditionalReveals();
+      autofillFromCsv();
+      generateWrap.classList.remove('hidden');
+    });
+  });
+
+  function wirePillGroups(scope) {
+    scope.querySelectorAll('.pills[data-group]').forEach(g => {
+      g.querySelectorAll('.pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          g.querySelectorAll('.pill').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          wireConditionalReveals();
+        });
+      });
+    });
+  }
+
+  function getGroupValue(name) {
+    const g = document.querySelector('.pills[data-group="' + name + '"]');
+    if (!g) return null;
+    const active = g.querySelector('.pill.active');
+    return active ? active.dataset.value : null;
+  }
+
+  function setPillActive(group, value) {
+    const g = document.querySelector('.pills[data-group="' + group + '"]');
+    if (!g) return;
+    g.querySelectorAll('.pill').forEach(b => b.classList.toggle('active', b.dataset.value === String(value)));
+  }
+
+  function toggle(id, hide) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('hidden', hide);
+  }
+
+  function wireConditionalReveals() {
+    if (discipline === 'medicine') {
+      const goal = getGroupValue('goal') || 'compare';
+      toggle('med_compareFields', goal !== 'compare');
+      toggle('med_regressionFields', goal !== 'regression');
+      toggle('med_diagnosticFields', goal !== 'diagnostic');
+      toggle('med_survivalFields', goal !== 'survival');
+      const ng = getGroupValue('numGroups');
+      toggle('independentWrap', !(ng === '2' || ng === '3'));
+    }
+    if (discipline === 'generic') {
+      const ng = getGroupValue('numGroups');
+      toggle('genericIndependentWrap', !(ng === '2' || ng === '3'));
+      toggle('genericPredictorsWrap', ng !== '0');
+    }
+    if (discipline === 'humanities') {
+      const goal = getGroupValue('goal');
+      toggle('groupCompareFields', goal !== 'compare');
+    }
+    if (discipline === 'psychology_education') {
+      const goal = getGroupValue('goal') || 'survey';
+      toggle('psy_experimentalFields', goal !== 'experimental');
+      toggle('psy_surveyFields', goal !== 'survey');
+      toggle('psy_compareFields', goal !== 'compare');
+    }
+    if (discipline === 'agriculture') {
+      const goal = getGroupValue('goal') || 'design';
+      toggle('agri_designFields', goal !== 'design');
+      toggle('agri_traitFields', goal !== 'correlation');
+      toggle('agri_sampleSizeWrap', goal === 'design');
+    }
+    if (discipline === 'engineering') {
+      const goal = getGroupValue('goal') || 'doe';
+      toggle('eng_doeFields', goal !== 'doe');
+      toggle('eng_regressionFields', goal !== 'regression');
+      toggle('eng_qcFields', goal !== 'qc');
+    }
+    if (discipline === 'economics') {
+      const goal = getGroupValue('goal') || 'crosssection';
+      toggle('econ_crossFields', goal !== 'crosssection');
+      toggle('econ_tsFields', goal !== 'timeseries');
+      toggle('econ_panelFields', goal !== 'panel');
+    }
+  }
+
+  // ---------------------------------------------------------------
+  // CSV upload + auto-detection
+  // ---------------------------------------------------------------
+  document.getElementById('uploadTrigger').addEventListener('click', () => document.getElementById('csvInput').click());
+
+  document.getElementById('csvInput').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    document.getElementById('uploadFileName').textContent = file.name;
+    const panel = document.getElementById('csvSummaryPanel');
+
+    if (typeof Papa === 'undefined') {
+      panel.classList.remove('hidden');
+      panel.innerHTML = '<p class="csv-note">امکان خواندن فایل در این لحظه وجود ندارد؛ می‌توانید بدون آپلود، مشخصات را دستی وارد کنید.</p>';
+      return;
+    }
+
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: function (results) {
+        try {
+          const rows = results.data;
+          const columnNames = results.meta.fields || [];
+          if (!rows.length || !columnNames.length) throw new Error('empty');
+
+          const columns = {};
+          columnNames.forEach(function (col) {
+            const vals = rows.map(function (r) { return r[col]; })
+              .filter(function (v) { return v !== undefined && v !== null && String(v).trim() !== ''; });
+            const numericVals = vals.filter(function (v) { return !isNaN(parseFloat(v)) && isFinite(v); });
+            const numericRatio = vals.length ? numericVals.length / vals.length : 0;
+            const uniqueSet = new Set(vals.map(function (v) { return String(v).trim(); }));
+            const isNumeric = numericRatio > 0.85;
+            columns[col] = {
+              count: vals.length,
+              isNumeric: isNumeric,
+              uniqueCount: uniqueSet.size,
+              // raw values kept for real, in-browser statistical computation (see renderStatsPreview)
+              rawValues: vals.map(function (v) { return String(v).trim(); }),
+              numericValues: isNumeric ? numericVals.map(function (v) { return parseFloat(v); }) : []
+            };
+          });
+
+          window.__csvSummary = { rowCount: rows.length, columns: columns, columnNames: columnNames };
+          window.__csvRows = rows;
+          window.__csvChoices = {};
+          renderCsvPanel();
+          if (discipline) autofillFromCsv();
+        } catch (err) {
+          panel.classList.remove('hidden');
+          panel.innerHTML = '<p class="csv-note">خواندن فایل ممکن نشد؛ لطفاً از یک فایل CSV استاندارد با سطر عنوان در ابتدا استفاده کنید.</p>';
+        }
+      },
+      error: function () {
+        panel.classList.remove('hidden');
+        panel.innerHTML = '<p class="csv-note">خواندن فایل ممکن نشد؛ لطفاً از یک فایل CSV استاندارد با سطر عنوان در ابتدا استفاده کنید.</p>';
+      }
+    });
+  });
+
+  function renderCsvPanel() {
+    const summary = window.__csvSummary;
+    const panel = document.getElementById('csvSummaryPanel');
+    if (!summary) { panel.classList.add('hidden'); return; }
+    panel.classList.remove('hidden');
+
+    const colRows = summary.columnNames.map(function (name) {
+      const m = summary.columns[name];
+      const badge = m.isNumeric ? '<span class="col-badge num">عددی</span>' : '<span class="col-badge cat">دسته‌ای</span>';
+      return '<div class="col-row"><span class="col-name">' + name + '</span>' + badge + '<span class="col-unique">' + m.uniqueCount + ' مقدار یکتا</span></div>';
+    }).join('');
+
+    const outcomeOptions = summary.columnNames.map(function (n) { return '<option value="' + n + '">' + n + '</option>'; }).join('');
+    const factorCandidates = summary.columnNames.filter(function (n) { return summary.columns[n].uniqueCount >= 2 && summary.columns[n].uniqueCount <= 12; });
+    const factorOptions = '<option value="">— هیچ‌کدام —</option>' + factorCandidates.map(function (n) {
+      return '<option value="' + n + '">' + n + ' (' + summary.columns[n].uniqueCount + ' سطح)</option>';
+    }).join('');
+
+    panel.innerHTML =
+      '<div class="csv-meta">تعداد مشاهدات: <strong>' + summary.rowCount + '</strong> · تعداد متغیر: <strong>' + summary.columnNames.length + '</strong></div>' +
+      '<div class="col-list">' + colRows + '</div>' +
+      '<div class="csv-selects">' +
+      '<div class="field-group"><label class="field-label">متغیر پیامد / وابسته اصلی</label>' +
+      '<select id="csvOutcomeSelect"><option value="">— انتخاب کنید —</option>' + outcomeOptions + '</select></div>' +
+      '<div class="row2">' +
+      '<div><label class="field-label">متغیر گروه‌بندی / تیمار اول</label><select id="csvFactor1Select">' + factorOptions + '</select></div>' +
+      '<div><label class="field-label">متغیر گروه‌بندی دوم (اختیاری)</label><select id="csvFactor2Select">' + factorOptions + '</select></div>' +
+      '</div></div>' +
+      '<p class="csv-note">پس از انتخاب رشته در پایین، فیلدهای مرتبط با این انتخاب‌ها به‌صورت خودکار پیشنهاد می‌شوند؛ همچنان می‌توانید هر مقدار را دستی ویرایش کنید.</p>' +
+      '<div id="csvStatsPreview"></div>';
+
+    document.getElementById('csvOutcomeSelect').addEventListener('change', function () {
+      window.__csvChoices = window.__csvChoices || {};
+      window.__csvChoices.outcomeCol = this.value;
+      if (discipline) autofillFromCsv();
+      renderStatsPreview();
+    });
+    document.getElementById('csvFactor1Select').addEventListener('change', function () {
+      window.__csvChoices = window.__csvChoices || {};
+      window.__csvChoices.factorCol1 = this.value;
+      if (discipline) autofillFromCsv();
+      renderStatsPreview();
+    });
+    document.getElementById('csvFactor2Select').addEventListener('change', function () {
+      window.__csvChoices = window.__csvChoices || {};
+      window.__csvChoices.factorCol2 = this.value;
+      if (discipline) autofillFromCsv();
+      renderStatsPreview();
+    });
+  }
+
+  // -----------------------------------------------------------
+  // Real statistics preview, computed in-browser with simple-statistics (ss)
+  // -----------------------------------------------------------
+  function fmtNum(x, digits) {
+    if (x === null || x === undefined || isNaN(x)) return '—';
+    return Number(x).toLocaleString('en-US', { maximumFractionDigits: digits === undefined ? 2 : digits });
+  }
+
+  function svgHistogram(values, bins) {
+    bins = bins || 10;
+    const min = ss.min(values), max = ss.max(values);
+    if (min === max) return '<p class="csv-note">همه مقادیر یکسان‌اند؛ رسم هیستوگرام معنادار نیست.</p>';
+    const width = 560, height = 140, padding = 20;
+    const binWidth = (max - min) / bins;
+    const counts = new Array(bins).fill(0);
+    values.forEach(function (v) {
+      let idx = Math.floor((v - min) / binWidth);
+      if (idx >= bins) idx = bins - 1;
+      if (idx < 0) idx = 0;
+      counts[idx]++;
+    });
+    const maxCount = Math.max.apply(null, counts);
+    const barW = (width - 2 * padding) / bins;
+    let bars = '';
+    counts.forEach(function (c, i) {
+      const barH = maxCount ? (c / maxCount) * (height - 2 * padding) : 0;
+      const x = padding + i * barW;
+      const y = height - padding - barH;
+      bars += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + Math.max(barW - 2, 1).toFixed(1) + '" height="' + barH.toFixed(1) + '" fill="var(--accent)" opacity="0.85"></rect>';
+    });
+    return '<svg viewBox="0 0 ' + width + ' ' + height + '" class="mini-chart" preserveAspectRatio="none">' +
+      '<line x1="' + padding + '" y1="' + (height - padding) + '" x2="' + (width - padding) + '" y2="' + (height - padding) + '" stroke="var(--border-strong)" stroke-width="1"></line>' +
+      bars + '</svg>' +
+      '<div class="chart-caption">توزیع واقعی مقادیر (' + fmtNum(min) + ' تا ' + fmtNum(max) + ')</div>';
+  }
+
+  function svgBarChart(labelsAndCounts) {
+    const width = 560, height = 140, padding = 24;
+    const maxCount = Math.max.apply(null, labelsAndCounts.map(function (d) { return d.count; }));
+    const n = labelsAndCounts.length;
+    const barW = (width - 2 * padding) / n;
+    let bars = '';
+    labelsAndCounts.forEach(function (d, i) {
+      const barH = maxCount ? (d.count / maxCount) * (height - 2 * padding) : 0;
+      const x = padding + i * barW;
+      const y = height - padding - barH;
+      bars += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + Math.max(barW - 6, 1).toFixed(1) + '" height="' + barH.toFixed(1) + '" fill="var(--accent-warm)" opacity="0.85"></rect>';
+    });
+    return '<svg viewBox="0 0 ' + width + ' ' + height + '" class="mini-chart" preserveAspectRatio="none">' +
+      '<line x1="' + padding + '" y1="' + (height - padding) + '" x2="' + (width - padding) + '" y2="' + (height - padding) + '" stroke="var(--border-strong)" stroke-width="1"></line>' +
+      bars + '</svg>';
+  }
+
+  function renderStatsPreview() {
+    const container = document.getElementById('csvStatsPreview');
+    if (!container) return;
+    const summary = window.__csvSummary;
+    const choices = window.__csvChoices || {};
+    if (!summary || !choices.outcomeCol || !summary.columns[choices.outcomeCol]) {
+      container.innerHTML = '';
+      return;
+    }
+    if (typeof ss === 'undefined') {
+      container.innerHTML = '<p class="csv-note">امکان محاسبه آماری در این لحظه وجود ندارد.</p>';
+      return;
+    }
+
+    const outMeta = summary.columns[choices.outcomeCol];
+    let html = '<div class="stats-preview"><h4>پیش‌نمایش آماری واقعی متغیر «' + choices.outcomeCol + '»</h4>';
+
+    if (outMeta.isNumeric && outMeta.numericValues.length >= 3) {
+      const v = outMeta.numericValues;
+      const n = v.length;
+      const mean = ss.mean(v);
+      const sd = n >= 2 ? ss.sampleStandardDeviation(v) : null;
+      const median = ss.median(v);
+      const min = ss.min(v);
+      const max = ss.max(v);
+      const skew = n >= 3 ? ss.sampleSkewness(v) : null;
+      const kurt = n >= 4 ? ss.sampleKurtosis(v) : null;
+
+      html += '<div class="stats-grid">' +
+        '<div class="stats-item"><div class="k">تعداد (n)</div><div class="v">' + n + '</div></div>' +
+        '<div class="stats-item"><div class="k">میانگین</div><div class="v">' + fmtNum(mean) + '</div></div>' +
+        '<div class="stats-item"><div class="k">انحراف معیار</div><div class="v">' + fmtNum(sd) + '</div></div>' +
+        '<div class="stats-item"><div class="k">میانه</div><div class="v">' + fmtNum(median) + '</div></div>' +
+        '<div class="stats-item"><div class="k">کمینه / بیشینه</div><div class="v">' + fmtNum(min) + ' / ' + fmtNum(max) + '</div></div>' +
+        '<div class="stats-item"><div class="k">چولگی (Skewness)</div><div class="v">' + fmtNum(skew) + '</div></div>' +
+        '<div class="stats-item"><div class="k">کشیدگی مازاد (Excess Kurtosis)</div><div class="v">' + fmtNum(kurt) + '</div></div>' +
+        '</div>';
+
+      if (skew !== null && kurt !== null && n >= 8) {
+        const looksNormal = Math.abs(skew) < 1 && Math.abs(kurt) < 1;
+        html += '<div class="stats-flag ' + (looksNormal ? 'ok' : 'warn') + '">' +
+          (looksNormal
+            ? '✓ بر اساس چولگی و کشیدگی، توزیع این متغیر به نرمال نزدیک به‌نظر می‌رسد.'
+            : '! بر اساس چولگی و کشیدگی، توزیع این متغیر ممکن است از نرمال فاصله داشته باشد.') +
+          '<span class="alt">این یک بررسی سریع و تقریبی است؛ برای نتیجه قطعی از آزمون Shapiro-Wilk در SPSS/R استفاده کنید.</span></div>';
+      }
+
+      html += svgHistogram(v, 10);
+
+      // Per-group breakdown if a grouping column is chosen
+      if (choices.factorCol1 && summary.columns[choices.factorCol1]) {
+        const groupMeta = summary.columns[choices.factorCol1];
+        const groupRaw = groupMeta.rawValues;
+        const outRaw = summary.columns[choices.outcomeCol].rawValues;
+        // pair values by row index (both arrays were built from the same filtered rows per-column,
+        // so we rebuild alignment from the original parsed rows instead of the filtered per-column arrays)
+        const rows = window.__csvRows || [];
+        const byGroup = {};
+        rows.forEach(function (r) {
+          const g = r[choices.factorCol1];
+          const val = parseFloat(r[choices.outcomeCol]);
+          if (g === undefined || g === null || String(g).trim() === '') return;
+          if (isNaN(val)) return;
+          const key = String(g).trim();
+          if (!byGroup[key]) byGroup[key] = [];
+          byGroup[key].push(val);
+        });
+        const groupKeys = Object.keys(byGroup);
+        if (groupKeys.length >= 2 && groupKeys.length <= 12) {
+          let rowsHtml = '';
+          const variances = [];
+          groupKeys.forEach(function (k) {
+            const arr = byGroup[k];
+            const gn = arr.length;
+            const gmean = ss.mean(arr);
+            const gsd = gn >= 2 ? ss.sampleStandardDeviation(arr) : null;
+            if (gn >= 2) variances.push(ss.sampleVariance(arr));
+            rowsHtml += '<div class="group-row"><span class="g-name">' + k + '</span>' +
+              '<span class="g-n">n=' + gn + '</span>' +
+              '<span class="g-mean">میانگین: ' + fmtNum(gmean) + '</span>' +
+              '<span class="g-sd">انحراف معیار: ' + fmtNum(gsd) + '</span></div>';
+          });
+          html += '<div class="group-table"><div class="group-table-title">میانگین و انحراف معیار «' + choices.outcomeCol + '» به تفکیک «' + choices.factorCol1 + '»</div>' + rowsHtml + '</div>';
+
+          if (variances.length >= 2) {
+            const ratio = Math.max.apply(null, variances) / Math.min.apply(null, variances);
+            if (ratio > 4) {
+              html += '<div class="stats-flag warn">! نسبت واریانس بزرگ‌ترین به کوچک‌ترین گروه حدود ' + fmtNum(ratio, 1) + ' است.' +
+                '<span class="alt">این نشانه‌ی احتمال ناهمگنی واریانس بین گروه‌هاست؛ پیش از آزمون پارامتری، آزمون لون را در نرم‌افزار خود اجرا کنید.</span></div>';
+            }
+          }
+
+          if (groupKeys.length === 2) {
+            const t = ss.tTestTwoSample(byGroup[groupKeys[0]], byGroup[groupKeys[1]], 0);
+            if (t !== null && t !== undefined) {
+              const df = byGroup[groupKeys[0]].length + byGroup[groupKeys[1]].length - 2;
+              const pApprox = 2 * (1 - ss.cumulativeStdNormalProbability(Math.abs(t)));
+              html += '<div class="stats-flag ' + (pApprox < 0.05 ? 'ok' : '') + '">پیش‌نمایش آزمون t مستقل: t ≈ ' + fmtNum(t, 2) + '، df ≈ ' + df + '، p تقریبی ≈ ' + fmtNum(pApprox, 3) +
+                '<span class="alt">این فقط یک پیش‌نمایش سریع (با تقریب نرمال) است، نه نتیجه‌ی نهایی؛ p-value دقیق را از SPSS/R با در نظر گرفتن مفروضات بگیرید.</span></div>';
+            }
+          }
+        }
+      }
+    } else {
+      // categorical outcome: real frequency table
+      const counts = {};
+      outMeta.rawValues.forEach(function (v) { counts[v] = (counts[v] || 0) + 1; });
+      const entries = Object.keys(counts).map(function (k) { return { label: k, count: counts[k] }; })
+        .sort(function (a, b) { return b.count - a.count; });
+      const total = outMeta.rawValues.length;
+      let rowsHtml = entries.slice(0, 15).map(function (e) {
+        const pct = total ? (e.count / total * 100) : 0;
+        return '<div class="group-row"><span class="g-name">' + e.label + '</span><span class="g-n">n=' + e.count + '</span><span class="g-mean">' + fmtNum(pct, 1) + '٪</span></div>';
+      }).join('');
+      html += '<div class="group-table"><div class="group-table-title">جدول فراوانی واقعی (' + entries.length + ' مقدار یکتا)</div>' + rowsHtml + '</div>';
+      if (entries.length <= 12) html += svgBarChart(entries);
+    }
+
+    html += '</div>';
+    container.innerHTML = html;
+  }
+
+  function autofillFromCsv() {
+    const summary = window.__csvSummary;
+    if (!summary) return;
+    const choices = window.__csvChoices || {};
+
+    const sampleInput = document.getElementById('f_sampleSize');
+    if (sampleInput) sampleInput.value = summary.rowCount;
+
+    if (choices.outcomeCol && summary.columns[choices.outcomeCol]) {
+      const meta = summary.columns[choices.outcomeCol];
+      let vtype = 'categorical';
+      if (meta.isNumeric && meta.uniqueCount >= 8) vtype = 'quant';
+      else if (meta.isNumeric && meta.uniqueCount < 8) vtype = 'ordinal';
+      setPillActive('variableType', vtype);
+    }
